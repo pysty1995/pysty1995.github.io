@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Learning English for Kids — Learn + Quiz</title>
+  <style>
+    :root{
+      --bg-1: #9be7ff;   /* sky light */
+      --bg-2: #7ac6ff;   /* sky mid */
+      --accent: #ff6db1; /* hot pink */
+      --accent-2:#7bff87;/* mint */
+      --ink: #1d2a3a;    /* dark text */
+      --card: #ffffffee; /* card bg */
+      --shadow: 0 10px 25px rgba(0,0,0,.15);
+    }
+    body.contrast{ --bg-1:#ffffff; --bg-2:#d4e7ff; --ink:#000; --accent:#ff2e63; --accent-2:#00c853; }
+    html,body{height:100%}
+    body{ margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Noto Sans, "Apple Color Emoji", "Segoe UI Emoji", sans-serif; color:var(--ink); background: linear-gradient(180deg, var(--bg-1), var(--bg-2)); overflow-x:hidden; }
+
+    /* Parallax layers */
+    .parallax{position:fixed; inset:0; z-index:-10; pointer-events:none}
+    .layer{position:fixed; inset:0; will-change:transform}
+    .layer.sky{background:
+      radial-gradient(12px 12px at 10% 20%, rgba(255,255,255,.35), rgba(255,255,255,0) 60%),
+      radial-gradient(10px 10px at 85% 15%, rgba(255,255,255,.35), rgba(255,255,255,0) 60%),
+      radial-gradient(8px 8px at 70% 60%, rgba(255,255,255,.3), rgba(255,255,255,0) 60%),
+      linear-gradient(180deg, var(--bg-1), var(--bg-2)); }
+    .layer.mountains{display:flex; align-items:flex-end}
+    .layer.mountains svg{width:200vw; height:45vh; opacity:.22; filter: blur(.5px)}
+    .layer.hills{display:flex; align-items:flex-end}
+    .layer.hills svg{width:200vw; height:40vh; opacity:.35}
+    .layer.clouds{overflow:hidden}
+    .cloud{position:absolute; top:10vh; left:-30vw; opacity:.9; filter: drop-shadow(0 8px 12px rgba(0,0,0,.15)); animation: drift linear infinite}
+    .cloud svg{width: 180px; height:auto}
+    @keyframes drift{from{transform:translateX(-30vw)} to{transform:translateX(130vw)}}
+    .layer.grass{display:flex; align-items:flex-end; mix-blend-mode:multiply}
+    .layer.grass:before{content:""; width:200vw; height:18vh; display:block; background:
+        linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.06)),
+        repeating-linear-gradient(90deg, #a6ff9f 0 30px, #78f28e 30px 60px);
+      box-shadow: 0 -6px 20px rgba(0,0,0,.15) inset; opacity:.75}
+
+    /* App chrome */
+    .app{position:relative}
+    header{ position:sticky; top:0; z-index:50; backdrop-filter: saturate(160%) blur(6px); background: linear-gradient(90deg, #ffffffd6, #fff0); border-bottom:1px solid rgba(0,0,0,.06); }
+    .topbar{ display:flex; align-items:center; gap:1rem; padding:.75rem 1rem; flex-wrap:wrap; justify-content:space-between }
+    .brand{ display:flex; align-items:center; gap:.75rem }
+    .logo{ width:42px; height:42px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #fff 0 20px, #ffd93b 22px, #ffb02e 42px); box-shadow: var(--shadow); position:relative; overflow:hidden }
+    .logo:before{content:""; position:absolute; inset:auto 6px 10px 6px; height:10px; background:rgba(255,255,255,.35); border-radius:999px}
+    h1{font-size: clamp(1.2rem, 2vw, 1.6rem); margin:0; letter-spacing:.5px}
+
+    /* Controls */
+    .controls{display:flex; flex-wrap:wrap; gap:.75rem; align-items:center}
+    .control{display:flex; align-items:center; gap:.5rem; background: var(--card); padding:.5rem .75rem; border-radius:14px; box-shadow: var(--shadow)} 
+    .control label{font-size:.8rem; opacity:.8}
+    select, input[type="range"], button, .filter-btn{ appearance:none; border:none; background:#fff; padding:.45rem .6rem; border-radius:10px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.07); font-weight:600; color:var(--ink) }
+    input[type="checkbox"]{transform: scale(1.2); accent-color: var(--accent)}
+    .btn{cursor:pointer; font-weight:800; background:linear-gradient(135deg, var(--accent), #ffa36c); color:#fff; box-shadow: var(--shadow)} 
+    .btn:active{transform: translateY(1px)}
+
+    /* Filters */
+    .tabs{display:flex; gap:.5rem; padding:.25rem 1rem .5rem}
+    .tab{background:#fff; font-weight:800; border-radius:12px; padding:.5rem .9rem; cursor:pointer; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08)}
+    .tab[aria-selected="true"]{background:linear-gradient(135deg,#ffe27a,#ff8aee); color:#002}
+
+    .filters{display:flex; gap:.5rem; padding:.25rem 1rem 1rem; flex-wrap:wrap}
+    .filter-btn{cursor:pointer; background:#fff7; font-weight:700}
+    .filter-btn[aria-pressed="true"]{background: linear-gradient(135deg, #ffe27a, #ff8aee); color:#002}
+
+    /* Grid & cards */
+    main{padding: min(5vw, 40px)} 
+    .grid{display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: clamp(.6rem, 2.5vw, 1.1rem)}
+    .card{ position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.5rem; padding:.9rem; border-radius:22px; background:var(--card); box-shadow: var(--shadow); isolation:isolate; outline:none; transition:.2s transform, .2s box-shadow }
+    .card:hover{transform: translateY(-3px) scale(1.02)}
+    .card:focus-visible{box-shadow: 0 0 0 3px #000, 0 0 0 6px #fff}
+    .card.playing{animation: bop .55s ease-in-out both}
+    @keyframes bop{0%{transform:scale(1)} 45%{transform:scale(1.1)} 100%{transform:scale(1)}}
+
+    .art{width:100%; aspect-ratio: 1 / 1; display:grid; place-items:center}
+    .art svg{width:100%; height:100%}
+    .art img{width:100%; height:100%; object-fit:cover; border-radius:18px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06)}
+    .cat{position:absolute; top:10px; right:12px; font-size:.7rem; opacity:.65; background:#fff8; padding:.12rem .5rem; border-radius:999px}
+
+    .confetti{position:absolute; inset:0; pointer-events:none; overflow:visible}
+    .confetti i{position:absolute; font-style:normal; will-change:transform, opacity}
+
+    /* Quiz */
+    #quizPage .quiz-wrap{display:grid; gap:1rem; background:var(--card); border-radius:20px; padding:1rem; box-shadow: var(--shadow)}
+    .quiz-top{display:flex; gap:1rem; align-items:center; flex-wrap:wrap}
+    .q-image{width:min(420px, 100%); aspect-ratio:1/1; background:#fff; border-radius:16px; overflow:hidden; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06)}
+    .q-image img{width:100%; height:100%; object-fit:cover}
+    .q-meta{display:grid; gap:.4rem; font-weight:700}
+    .quiz-options{display:grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap:.8rem}
+    .option{background:#fff; border-radius:16px; padding:.5rem; box-shadow: var(--shadow); outline:none}
+    .option .art{aspect-ratio:1/1}
+    .option.correct{box-shadow: 0 0 0 3px #20d67b}
+    .option.wrong{box-shadow: 0 0 0 3px #ff5b6b}
+    .quiz-controls{display:flex; gap:.5rem; justify-content:flex-end}
+
+    footer{padding: 2rem 1rem 4rem; text-align:center; opacity:.8}
+    .hidden{display:none!important}
+  </style>
+</head>
+<body>
+  <!-- Parallax background layers -->
+  <div class="parallax" aria-hidden="true">
+    <div class="layer sky" data-speed="0.08"></div>
+    <div class="layer mountains" data-speed="0.04">
+      <svg viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 80 L20 55 L40 80 L65 40 L95 85 L120 50 L145 85 L170 60 L200 85 L200 100 L0 100 Z" fill="#3b6fa7"/>
+      </svg>
+    </div>
+    <div class="layer hills" data-speed="0.09">
+      <svg viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 90 Q25 70 50 90 T100 90 T150 90 T200 90 L200 100 L0 100 Z" fill="#66d17a"/>
+      </svg>
+    </div>
+    <div class="layer clouds" data-speed="0.18" id="cloud-layer"></div>
+    <div class="layer grass" data-speed="0.25"></div>
+  </div>
+
+  <div class="app" role="application" aria-label="Learning English for Kids">
+    <header>
+      <div class="topbar">
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <h1>Learning English for Kids</h1>
+        </div>
+        <div class="controls" aria-label="Sound and appearance settings">
+          <div class="control">
+            <label for="voice">Voice</label>
+            <select id="voice" aria-label="Voice"></select>
+          </div>
+          <div class="control">
+            <label for="volume">Volume</label>
+            <input type="range" id="volume" min="0" max="1" step="0.05" value="0.9" />
+          </div>
+          <div class="control">
+            <label for="rate">Speed</label>
+            <input type="range" id="rate" min="0.6" max="1.2" step="0.05" value="0.95" />
+          </div>
+          <div class="control">
+            <label for="pitch">Pitch</label>
+            <input type="range" id="pitch" min="0.6" max="1.4" step="0.05" value="1.05" />
+          </div>
+          <div class="control">
+            <label for="mute">Mute</label><input id="mute" type="checkbox" />
+          </div>
+          <div class="control">
+            <label for="contrast">High contrast</label><input id="contrast" type="checkbox" />
+          </div>
+          <button class="btn" id="test-voice" title="Hear a sample">Test Voice</button>
+          <button class="btn" id="shuffle" title="Shuffle the current category">Shuffle</button>
+        </div>
+      </div>
+      <div class="control" style="margin: .5rem 1rem 0">
+        <label for="artStyle">Art style</label>
+        <select id="artStyle" aria-label="Art style">
+          <option value="photo" selected>Photos (realistic)</option>
+          <option value="cartoon">Cartoon</option>
+        </select>
+      </div>
+
+      <nav class="tabs" aria-label="Pages">
+        <button class="tab" id="tab-learn" aria-selected="true">Learn</button>
+        <button class="tab" id="tab-quiz" aria-selected="false">Quiz</button>
+      </nav>
+
+      <div class="filters" id="filters" role="toolbar" aria-label="Categories"></div>
+    </header>
+
+    <main>
+      <section id="learnPage">
+        <div class="grid" id="grid" aria-live="polite"></div>
+      </section>
+      <section id="quizPage" class="hidden" aria-labelledby="tab-quiz">
+        <div class="quiz-wrap">
+          <div class="quiz-top">
+            <div class="q-image" id="qImage" role="img" aria-label="Question image"></div>
+            <div class="q-meta">
+              <div id="qCounter">Question 1/10</div>
+              <div id="qPrompt">Which picture matches?</div>
+              <div id="qScore">Score: 0</div>
+            </div>
+          </div>
+          <div class="quiz-options" id="qOptions"></div>
+          <div class="quiz-controls">
+            <button class="btn" id="qReveal">Show answer</button>
+            <button class="btn" id="qNext">Next</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      Tip: Click a picture to hear its name! Use the controls above to adjust the voice. Made with ❤️ for curious minds.
+    </footer>
+  </div>
+
+  <template id="cloud-svg">
+    <svg viewBox="0 0 120 70" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <g fill="#fff">
+        <ellipse cx="35" cy="40" rx="24" ry="16"/>
+        <ellipse cx="55" cy="32" rx="20" ry="14"/>
+        <ellipse cx="70" cy="40" rx="18" ry="12"/>
+        <ellipse cx="90" cy="42" rx="22" ry="15"/>
+        <rect x="30" y="40" width="62" height="15" rx="8"/>
+      </g>
+      <circle cx="48" cy="30" r="2" fill="#0002"/>
+      <circle cx="58" cy="30" r="2" fill="#0002"/>
+    </svg>
+  </template>
+
+  <script>
+    // =============================================
+    //  REALISTIC PHOTOS (Public Domain via Openverse) + QUIZ PAGE
+    // =============================================
+
+    // ------- Utilities -------
+    function contrastFor(hex){
+      try{ const c = hex.replace('#',''); const r = parseInt(c.substring(0,2),16), g = parseInt(c.substring(2,4),16), b = parseInt(c.substring(4,6),16); const l = (0.2126*r + 0.7152*g + 0.0722*b); return l > 150 ? '#213' : '#fff'; }catch{ return '#fff'; }
+    }
+    function hashCode(str){ let h=0; for(let i=0;i<str.length;i++){ h=((h<<5)-h) + str.charCodeAt(i); h|=0; } return Math.abs(h); }
+
+    const COLOR_PALETTE = [ ['Red','#ff4a5b'],['Blue','#5dd1ff'],['Green','#66f0b5'],['Yellow','#ffe27a'],['Purple','#b08cff'],['Orange','#ff9c5a'],['Pink','#ff6db1'],['Teal','#4dded2'],['Lime','#b6ff5a'],['Brown','#c69c6d'],['Gray','#aab7c4'],['Black','#444444'],['White','#ffffff'] ];
+
+    // ------- Categories (14) -------
+    const CATEGORY_DEFS = [
+      {name:'Animals', kinds:['Cat','Dog','Bird','Fish','Lion','Elephant','Rabbit','Fox','Panda','Frog','Horse','Tiger','Bear','Giraffe','Zebra','Monkey','Koala','Deer','Wolf','Butterfly']},
+      {name:'Fruits', kinds:['Apple','Banana','Orange','Strawberry','Grapes','Watermelon','Pineapple','Mango','Blueberry','Pear','Peach','Kiwi','Cherry','Lemon','Lime','Papaya','Plum','Raspberry','Coconut','Pomegranate']},
+      {name:'Vegetables', kinds:['Carrot','Tomato','Potato','Cucumber','Broccoli','Cauliflower','Onion','Garlic','Pepper','Corn','Eggplant','Lettuce','Spinach','Pumpkin','Peas','Cabbage','Radish','Beetroot','Asparagus','Zucchini']},
+      {name:'Vehicles', kinds:['Car','Bus','Bike','Train','Plane','Boat','Truck','Rocket','Scooter','Submarine','Helicopter','Tractor','Taxi','Ambulance','Fire Truck','Ship','Hot Air Balloon','Subway','Cable Car','Skateboard']},
+      {name:'Instruments', kinds:['Guitar','Piano','Drum','Trumpet','Violin','Flute','Saxophone','Harp','Tambourine','Xylophone','Cello','Clarinet','Maracas','Ukulele','DJ Mixer','Microphone','Organ','Accordion','Cymbals','Triangle']},
+      {name:'Clothes', kinds:['Shirt','Pants','Hat','Dress','Shoes','Coat','Socks','Gloves','Scarf','Skirt','Jacket','Belt','Shorts','Sweater','Tie','Boots','Cap','Raincoat','Pajamas','Uniform']},
+      {name:'School', kinds:['Book','Pencil','Crayon','Ruler','Eraser','Notebook','Scissors','Glue','Backpack','Clock','Desk','Chair','Marker','Chalk','Globe','Calculator','Compass','Protractor','Paint Brush','Whiteboard']},
+      {name:'Sports', kinds:['Soccer Ball','Basketball','Tennis Ball','Baseball','Bat','Skateboard','Helmet','Whistle','Goal','Trophy','Volleyball','Rugby Ball','Hockey Stick','Skis','Snowboard','Surfboard','Boxing Gloves','Badminton','Ping Pong','Dumbbell']},
+      {name:'Home', kinds:['Sofa','Lamp','Bed','Chair','Table','Cup','Plate','Spoon','TV','Door','Window','Fridge','Oven','Sink','Toilet','Mirror','Clock','Curtains','Plant','Carpet']},
+      {name:'Nature', kinds:['Sun','Moon','Star','Tree','Flower','Cloud','Mountain','Leaf','Raindrop','Mushroom','River','Lake','Ocean','Desert','Forest','Rainbow','Volcano','Beach','Cave','Waterfall']},
+      {name:'Toys', kinds:['Ball','Kite','Robot','Blocks','Teddy','Yo-yo','Drum','Puzzle','Toy Car','Balloon','Doll','Action Figure','Top','Bubble Wand','Frisbee','RC Car','Train Set','Playdough','Marble','Slingshot']},
+      {name:'Tools', kinds:['Hammer','Saw','Wrench','Screwdriver','Drill','Pliers','Tape Measure','Level','Chisel','Axe','Shovel','Rake','Ladder','Paint Roller','Brush','Sander','Clamp','Trowel','Crowbar','Wheelbarrow']},
+      {name:'Jobs', kinds:['Doctor','Nurse','Teacher','Firefighter','Police Officer','Chef','Farmer','Pilot','Engineer','Artist','Musician','Baker','Builder','Driver','Scientist','Dentist','Librarian','Photographer','Vet','Mechanic']},
+      {name:'Ocean Animals', kinds:['Dolphin','Whale','Shark','Octopus','Sea Turtle','Seal','Sea Horse','Crab','Lobster','Jellyfish','Starfish','Manta Ray','Clownfish','Coral','Sea Urchin','Walrus','Penguin','Swordfish','Eel','Seagull']}
+    ];
+    const PER_CATEGORY = 60; // ≥20
+
+    // Cartoon fallback (if user selects Cartoon)
+    function icon(kind, cat, color){
+      const ink = contrastFor(color);
+      const eye = '<circle cx="42" cy="48" r="3" fill="'+ink+'99"/>'+'<circle cx="58" cy="48" r="3" fill="'+ink+'99"/>';
+      const smile = '<path d="M40 60 q10 8 20 0" stroke="'+ink+'a0" stroke-width="3" fill="none" stroke-linecap="round"/>';
+      const w = (s)=>'<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'+s+'</svg>';
+      if(cat==='Animals'){ return w('<circle cx="50" cy="52" r="26" fill="'+color+'"/>'+eye+smile); }
+      return w('<rect x="22" y="34" width="56" height="40" rx="14" fill="'+color+'"/>'+'<text x="50" y="58" text-anchor="middle" fill="'+ink+'" font-size="10" font-weight="700">'+kind+'</text>');
+    }
+
+    function makeItem(word, cat, color){ return { word, cat, svg: icon(word, cat, color) }; }
+    function buildDataset(){
+      const items = [];
+      CATEGORY_DEFS.forEach(def => {
+        const cat = def.name, kinds = def.kinds;
+        for(let i=0;i<PER_CATEGORY;i++){
+          const pair = COLOR_PALETTE[i % COLOR_PALETTE.length];
+          const kind = kinds[i % kinds.length];
+          const label = pair[0]+' '+kind;
+          items.push(makeItem(label, cat, pair[1]));
+        }
+      });
+      return items;
+    }
+
+    // ------- Openverse (Public Domain only) -------
+    const IMG_CACHE = new Map();
+    const META_CACHE = new Map();
+    const OPENVERSE_BASE = 'https://api.openverse.org/v1/images/'; // CC0 + Public Domain Mark
+
+    const COLOR_WORDS = ['red','blue','green','yellow','purple','orange','pink','teal','lime','brown','gray','black','white'];
+    function stripColorPrefix(word){
+      if(!word) return '';
+      const parts = word.split(' ');
+      if(parts.length>1 && COLOR_WORDS.includes(parts[0].toLowerCase())){
+        return parts.slice(1).join(' ');
+      }
+      return word;
+    }
+    function cleanForQuery(text){
+      const lower = String(text||'').toLowerCase();
+      let out='';
+      for(let i=0;i<lower.length;i++){
+        const ch = lower[i];
+        const c = ch.charCodeAt(0);
+        if((c>=97 && c<=122) || ch===' ') out += ch;
+      }
+      return out.trim();
+    }
+    function ovQuery(item){
+      const base = cleanForQuery(stripColorPrefix(item.word));
+      return encodeURIComponent(base + ' ' + item.cat.toLowerCase());
+    }
+    async function fetchOpenverseImage(item){
+      const key = item.word+'|'+item.cat;
+      if(IMG_CACHE.has(key)) return { url: IMG_CACHE.get(key), meta: META_CACHE.get(key) };
+      const url = OPENVERSE_BASE + '?q=' + ovQuery(item) + '&page_size=30&license=cc0,pdm&source=wikimedia,wordpress';
+      const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      if(!res.ok) throw new Error('Openverse HTTP '+res.status);
+      const data = await res.json();
+      const results = (data && data.results) ? data.results : [];
+      if(!results.length) throw new Error('No results');
+      const pick = results[ hashCode(key) % results.length ];
+      const best = pick.thumbnail || pick.url || pick.foreign_landing_url;
+      if(!best) throw new Error('No image URL');
+      IMG_CACHE.set(key, best);
+      META_CACHE.set(key, { title: pick.title || item.word, creator: pick.creator, license: pick.license, src: pick.url || pick.thumbnail, page: pick.foreign_landing_url });
+      return { url: best, meta: META_CACHE.get(key) };
+    }
+
+    // ------- UI wiring -------
+    const grid = document.getElementById('grid');
+    const filtersEl = document.getElementById('filters');
+    const artStyleSel = document.getElementById('artStyle');
+    const voiceSel = document.getElementById('voice');
+    const pitchEl = document.getElementById('pitch');
+    const rateEl  = document.getElementById('rate');
+    const volEl   = document.getElementById('volume');
+    const muteEl  = document.getElementById('mute');
+
+    // Quiz elements
+    const tabLearn = document.getElementById('tab-learn');
+    const tabQuiz  = document.getElementById('tab-quiz');
+    const learnPage = document.getElementById('learnPage');
+    const quizPage  = document.getElementById('quizPage');
+    const qImage   = document.getElementById('qImage');
+    const qOptions = document.getElementById('qOptions');
+    const qCounter = document.getElementById('qCounter');
+    const qPrompt  = document.getElementById('qPrompt');
+    const qScore   = document.getElementById('qScore');
+    const qReveal  = document.getElementById('qReveal');
+    const qNext    = document.getElementById('qNext');
+
+    let ITEMS = [], categories = [], activeCat = 'All', filtered = [], visibleCount = 0;
+
+    function renderFilters(){
+      filtersEl.innerHTML = '';
+      const dataCats = ['All', ...categories];
+      dataCats.forEach(c => {
+        const b = document.createElement('button');
+        b.className = 'filter-btn';
+        b.setAttribute('aria-pressed', c === activeCat ? 'true' : 'false');
+        b.textContent = c;
+        b.addEventListener('click', () => { activeCat = c; renderFilters(); renderGrid(true); });
+        filtersEl.appendChild(b);
+      });
+    }
+
+    const loadMoreBtn = document.createElement('button');
+    loadMoreBtn.id = 'loadMore'; loadMoreBtn.className = 'btn'; loadMoreBtn.style.margin = '1rem auto 0'; loadMoreBtn.style.display = 'block'; loadMoreBtn.textContent = 'Load more';
+    loadMoreBtn.addEventListener('click', ()=>{ visibleCount += 48; drawCards(); });
+
+    function renderGrid(reset=false){
+      filtered = ITEMS.filter(it => activeCat === 'All' || it.cat === activeCat);
+      if(reset) visibleCount = 0; visibleCount = Math.max(visibleCount, 48); drawCards();
+    }
+
+    // Lazy load photos for Learn page
+    let io = null;
+    function ensureObserver(){
+      if(io) return;
+      io = new IntersectionObserver((entries)=>{
+        entries.forEach(async (entry)=>{
+          if(!entry.isIntersecting) return;
+          const img = entry.target; io.unobserve(img);
+          const { item } = img.dataset;
+          try{
+            if((artStyleSel && artStyleSel.value) === 'cartoon'){ img.outerHTML = window.atob(img.getAttribute('data-svg')); return; }
+            const parsed = JSON.parse(decodeURIComponent(item));
+            const res = await fetchOpenverseImage(parsed);
+            img.src = res.url; img.alt = (res.meta && res.meta.title) || parsed.word; img.loading = 'lazy';
+          }catch{ img.outerHTML = window.atob(img.getAttribute('data-svg')); }
+        });
+      }, { rootMargin: '200px' });
+    }
+
+    function drawCards(){
+      grid.innerHTML = '';
+      const slice = filtered.slice(0, visibleCount);
+      slice.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card'; card.setAttribute('data-cat', item.cat); card.setAttribute('aria-label', item.word);
+        const svg64 = btoa(item.svg);
+        card.innerHTML = '<div class="cat">'+item.cat+'</div>'+
+                         '<div class="art"><img alt="'+item.word+'" data-item="'+encodeURIComponent(JSON.stringify(item))+'" data-svg="'+svg64+'" referrerpolicy="no-referrer"/></div>'+
+                         '<div class="word">'+item.word+'</div>'+
+                         '<div class="confetti" aria-hidden="true"></div>';
+        const artEl = card.querySelector('.art');
+        artEl.setAttribute('tabindex','0'); artEl.setAttribute('role','button'); artEl.setAttribute('aria-label','Say '+item.word);
+        artEl.addEventListener('click', (e)=>{ if(!e.target.closest('img,svg')) return; playCard(card, item.word); });
+        artEl.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); playCard(card, item.word); }});
+        grid.appendChild(card);
+      });
+      ensureObserver();
+      grid.querySelectorAll('img[data-item]').forEach(img => io.observe(img));
+      if(filtered.length > visibleCount){ if(!loadMoreBtn.isConnected) document.querySelector('main').appendChild(loadMoreBtn); loadMoreBtn.textContent = 'Load more ('+(filtered.length - visibleCount)+' left)'; }
+      else if(loadMoreBtn.isConnected) loadMoreBtn.remove();
+    }
+
+    function playCard(card, word){ card.classList.add('playing'); setTimeout(() => card.classList.remove('playing'), 550); confetti(card.querySelector('.confetti')); speakWord(word); }
+
+    const EMOJI = ['✨','🎉','⭐️','💫','🎈','😊'];
+    function confetti(host){
+      host.innerHTML = '';
+      for(let i=0;i<12;i++){
+        const el = document.createElement('i'); el.textContent = EMOJI[Math.floor(Math.random()*EMOJI.length)];
+        const x = Math.random()*90+5, y = Math.random()*5 + 5, rot = (Math.random()*60-30), dur = 700 + Math.random()*600;
+        el.style.left = x+'%'; el.style.top = y+'%'; el.style.opacity = '0'; host.appendChild(el);
+        el.animate([
+          { transform:'translate(-50%,-50%) rotate('+rot+'deg) scale(1)', opacity:0 },
+          { transform:'translate(-50%,0) rotate('+(rot+60)+'deg) scale(1.1)', opacity:1, offset:.3 },
+          { transform:'translate(-50%,120%) rotate('+(rot+120)+'deg) scale(1)', opacity:0 }
+        ], { duration: dur, easing:'cubic-bezier(.22,1,.36,1)' });
+      }
+    }
+
+    // Speech
+    let VOICES = [];
+    function loadVoices(){
+      const voices = window.speechSynthesis.getVoices();
+      VOICES = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+      voiceSel.innerHTML = VOICES.map((v, i) => '<option value="'+i+'">'+v.name+' ('+v.lang+')</option>').join('');
+      let preferred = VOICES.findIndex(v => /Google US English|Samantha|Microsoft (Aria|Mark)/i.test(v.name));
+      voiceSel.selectedIndex = preferred >= 0 ? preferred : 0;
+    }
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    function speakWord(text){ if(muteEl.checked) return; window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); const v = VOICES[voiceSel.selectedIndex] || window.speechSynthesis.getVoices()[0]; if(v) u.voice = v; u.lang = (v && v.lang) ? v.lang : 'en-US'; u.pitch = parseFloat(pitchEl.value); u.rate = parseFloat(rateEl.value); u.volume = parseFloat(volEl.value); if(text.includes(' ')) u.rate = Math.max(.85, u.rate - .05); window.speechSynthesis.speak(u); }
+
+    // Parallax
+    function updateParallax(){ const y = window.scrollY || 0; document.querySelectorAll('.layer').forEach(layer => { const s = parseFloat(layer.dataset.speed || '0'); layer.style.transform = 'translate3d(0, '+(-y * s)+'px, 0)'; }); }
+    window.addEventListener('scroll', updateParallax, { passive:true });
+    function makeClouds(){ const host = document.getElementById('cloud-layer'); const tpl = document.getElementById('cloud-svg'); const N = 12; for(let i=0;i<N;i++){ const c = document.createElement('div'); c.className = 'cloud'; const clone = tpl.content.cloneNode(true); c.appendChild(clone); const top = 5 + Math.random()*60; const scale = .6 + Math.random()*0.9; const dur = 40 + Math.random()*50; c.style.top = top+'vh'; c.style.animationDuration = dur+'s'; c.style.opacity = (0.7 + Math.random()*0.3).toFixed(2); c.style.transform = 'scale('+scale+')'; c.style.animationDelay = (-Math.random()*dur)+'s'; host.appendChild(c); } }
+
+    // Tabs switching
+    function showPage(which){
+      const quiz = which === 'quiz';
+      learnPage.classList.toggle('hidden', quiz);
+      quizPage.classList.toggle('hidden', !quiz);
+      document.getElementById('filters').classList.toggle('hidden', quiz);
+      tabLearn.setAttribute('aria-selected', (!quiz).toString());
+      tabQuiz.setAttribute('aria-selected', (quiz).toString());
+    }
+    tabLearn.addEventListener('click', ()=>showPage('learn'));
+    tabQuiz.addEventListener('click', ()=>showPage('quiz'));
+
+    // ------- Quiz helpers -------
+    async function loadImgInto(el, item){
+      el.innerHTML = '';
+      try{
+        const res = await fetchOpenverseImage(item);
+        const img = document.createElement('img');
+        img.src = res.url; img.alt = (res.meta && res.meta.title) || item.word; img.loading = 'lazy';
+        el.appendChild(img);
+      }catch{ el.innerHTML = item.svg; }
+    }
+
+    function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+    function buildQuiz(count=10){
+      const qs = [];
+      for(let i=0;i<count;i++){
+        const cat = pick(CATEGORY_DEFS).name;
+        const pool = ITEMS.filter(it => it.cat === cat);
+        const correct = pick(pool);
+        const used = new Set([correct.word]);
+        const distractors = [];
+        while(distractors.length < 3){ const d = pick(pool); if(!used.has(d.word)){ used.add(d.word); distractors.push(d); } }
+        const options = [...distractors, correct].sort(()=>Math.random()-0.5);
+        qs.push({ cat, correct, options });
+      }
+      return qs;
+    }
+
+    let QUIZ = [], qIndex = 0, score = 0;
+
+    function attachOptionHandlers(btn, opt, correct){
+      const art = btn.querySelector('.art');
+      art.setAttribute('tabindex','0'); art.setAttribute('role','button');
+      art.addEventListener('click', (e)=>{ if(!e.target.closest('img,svg')) return; speakWord(opt.word); selectOption(btn, opt.word === correct.word); });
+      art.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); speakWord(opt.word); selectOption(btn, opt.word===correct.word); }});
+    }
+
+    function renderQuestion(){
+      const q = QUIZ[qIndex];
+      qCounter.textContent = 'Question ' + (qIndex+1) + '/' + QUIZ.length;
+      qPrompt.textContent  = 'Find the ' + stripColorPrefix(q.correct.word) + ' (' + q.cat + ')';
+      qScore.textContent   = 'Score: ' + score;
+      loadImgInto(qImage, q.correct);
+      qOptions.innerHTML = '';
+      q.options.forEach((opt)=>{
+        const btn = document.createElement('div');
+        btn.className = 'option';
+        btn.dataset.word = opt.word;
+        btn.innerHTML = '<div class="art"></div>';
+        qOptions.appendChild(btn);
+        loadImgInto(btn.querySelector('.art'), opt);
+        attachOptionHandlers(btn, opt, q.correct);
+      });
+      qNext.disabled = true;
+    }
+
+    function selectOption(btn, isCorrect){
+      if(btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
+      if(isCorrect){ btn.classList.add('correct'); score++; qScore.textContent = 'Score: ' + score; confetti(btn); }
+      else { btn.classList.add('wrong'); }
+      qNext.disabled = false;
+    }
+
+    function revealAnswer(){
+      const q = QUIZ[qIndex];
+      Array.from(qOptions.children).forEach((btn)=>{ if(btn.dataset.word === q.correct.word){ btn.classList.add('correct'); } });
+      qNext.disabled = false;
+    }
+    qReveal.addEventListener('click', revealAnswer);
+    function nextQuestion(){
+      if(qIndex < QUIZ.length - 1){ qIndex++; renderQuestion(); }
+      else {
+        qPrompt.textContent = 'Great job! You finished the quiz.';
+        qImage.innerHTML = '';
+        qOptions.innerHTML = '';
+        qNext.disabled = true;
+      }
+    }
+    qNext.addEventListener('click', nextQuestion);
+
+    // Controls wiring
+    document.getElementById('contrast').addEventListener('change', e => { document.body.classList.toggle('contrast', e.target.checked); });
+    document.getElementById('test-voice').addEventListener('click', () => speakWord("Hello! Let's learn many new words!"));
+    document.getElementById('shuffle').addEventListener('click', () => { filtered.sort(()=>Math.random()-0.5); visibleCount = Math.min(filtered.length, Math.max(48, visibleCount)); drawCards(); });
+    document.getElementById('artStyle').addEventListener('change', ()=> renderGrid(true));
+
+    // Init
+    function init(){
+      ITEMS = buildDataset();
+      categories = CATEGORY_DEFS.map(c=>c.name);
+      renderFilters();
+      activeCat = 'All';
+      // default to Photos for realism
+      artStyleSel.value = 'photo';
+      renderGrid(true);
+      loadVoices();
+      makeClouds();
+      updateParallax();
+      // Build quiz
+      QUIZ = buildQuiz(10);
+      renderQuestion();
+    }
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
