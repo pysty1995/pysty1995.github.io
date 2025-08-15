@@ -1,555 +1,1597 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Learning English for Kids — Learn + Quiz</title>
-  <style>
-    :root{
-      --bg-1: #9be7ff;   /* sky light */
-      --bg-2: #7ac6ff;   /* sky mid */
-      --accent: #ff6db1; /* hot pink */
-      --accent-2:#7bff87;/* mint */
-      --ink: #1d2a3a;    /* dark text */
-      --card: #ffffffee; /* card bg */
-      --shadow: 0 10px 25px rgba(0,0,0,.15);
-    }
-    body.contrast{ --bg-1:#ffffff; --bg-2:#d4e7ff; --ink:#000; --accent:#ff2e63; --accent-2:#00c853; }
-    html,body{height:100%}
-    body{ margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Noto Sans, "Apple Color Emoji", "Segoe UI Emoji", sans-serif; color:var(--ink); background: linear-gradient(180deg, var(--bg-1), var(--bg-2)); overflow-x:hidden; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning English for Kids</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-1: #0a183d;
+            --bg-2: #3a65a3;
+        }
 
-    /* Parallax layers */
-    .parallax{position:fixed; inset:0; z-index:-10; pointer-events:none}
-    .layer{position:fixed; inset:0; will-change:transform}
-    .layer.sky{background:
-      radial-gradient(12px 12px at 10% 20%, rgba(255,255,255,.35), rgba(255,255,255,0) 60%),
-      radial-gradient(10px 10px at 85% 15%, rgba(255,255,255,.35), rgba(255,255,255,0) 60%),
-      radial-gradient(8px 8px at 70% 60%, rgba(255,255,255,.3), rgba(255,255,255,0) 60%),
-      linear-gradient(180deg, var(--bg-1), var(--bg-2)); }
-    .layer.mountains{display:flex; align-items:flex-end}
-    .layer.mountains svg{width:200vw; height:45vh; opacity:.22; filter: blur(.5px)}
-    .layer.hills{display:flex; align-items:flex-end}
-    .layer.hills svg{width:200vw; height:40vh; opacity:.35}
-    .layer.clouds{overflow:hidden}
-    .cloud{position:absolute; top:10vh; left:-30vw; opacity:.9; filter: drop-shadow(0 8px 12px rgba(0,0,0,.15)); animation: drift linear infinite}
-    .cloud svg{width: 180px; height:auto}
-    @keyframes drift{from{transform:translateX(-30vw)} to{transform:translateX(130vw)}}
-    .layer.grass{display:flex; align-items:flex-end; mix-blend-mode:multiply}
-    .layer.grass:before{content:""; width:200vw; height:18vh; display:block; background:
-        linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.06)),
-        repeating-linear-gradient(90deg, #a6ff9f 0 30px, #78f28e 30px 60px);
-      box-shadow: 0 -6px 20px rgba(0,0,0,.15) inset; opacity:.75}
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            background-color: var(--bg-2);
+        }
 
-    /* App chrome */
-    .app{position:relative}
-    header{ position:sticky; top:0; z-index:50; backdrop-filter: saturate(160%) blur(6px); background: linear-gradient(90deg, #ffffffd6, #fff0); border-bottom:1px solid rgba(0,0,0,.06); }
-    .topbar{ display:flex; align-items:center; gap:1rem; padding:.75rem 1rem; flex-wrap:wrap; justify-content:space-between }
-    .brand{ display:flex; align-items:center; gap:.75rem }
-    .logo{ width:42px; height:42px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #fff 0 20px, #ffd93b 22px, #ffb02e 42px); box-shadow: var(--shadow); position:relative; overflow:hidden }
-    .logo:before{content:""; position:absolute; inset:auto 6px 10px 6px; height:10px; background:rgba(255,255,255,.35); border-radius:999px}
-    h1{font-size: clamp(1.2rem, 2vw, 1.6rem); margin:0; letter-spacing:.5px}
+        .font-fredoka {
+            font-family: 'Fredoka One', cursive;
+        }
 
-    /* Controls */
-    .controls{display:flex; flex-wrap:wrap; gap:.75rem; align-items:center}
-    .control{display:flex; align-items:center; gap:.5rem; background: var(--card); padding:.5rem .75rem; border-radius:14px; box-shadow: var(--shadow)} 
-    .control label{font-size:.8rem; opacity:.8}
-    select, input[type="range"], button, .filter-btn{ appearance:none; border:none; background:#fff; padding:.45rem .6rem; border-radius:10px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.07); font-weight:600; color:var(--ink) }
-    input[type="checkbox"]{transform: scale(1.2); accent-color: var(--accent)}
-    .btn{cursor:pointer; font-weight:800; background:linear-gradient(135deg, var(--accent), #ffa36c); color:#fff; box-shadow: var(--shadow)} 
-    .btn:active{transform: translateY(1px)}
+        /* --- STATIC BACKGROUND STYLES --- */
+        .background-container {
+            position: fixed;
+            inset: 0;
+            z-index: -10;
+            pointer-events: none
+        }
 
-    /* Filters */
-    .tabs{display:flex; gap:.5rem; padding:.25rem 1rem .5rem}
-    .tab{background:#fff; font-weight:800; border-radius:12px; padding:.5rem .9rem; cursor:pointer; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08)}
-    .tab[aria-selected="true"]{background:linear-gradient(135deg,#ffe27a,#ff8aee); color:#002}
+        .layer {
+            position: fixed;
+            inset: 0;
+        }
 
-    .filters{display:flex; gap:.5rem; padding:.25rem 1rem 1rem; flex-wrap:wrap}
-    .filter-btn{cursor:pointer; background:#fff7; font-weight:700}
-    .filter-btn[aria-pressed="true"]{background: linear-gradient(135deg, #ffe27a, #ff8aee); color:#002}
+        .layer.sky {
+            background: radial-gradient(12px 12px at 10% 20%, rgba(255, 255, 255, .35), rgba(255, 255, 255, 0) 60%),
+            radial-gradient(10px 10px at 85% 15%, rgba(255, 255, 255, .35), rgba(255, 255, 255, 0) 60%),
+            radial-gradient(8px 8px at 70% 60%, rgba(255, 255, 255, .3), rgba(255, 255, 255, 0) 60%),
+            linear-gradient(180deg, var(--bg-1), var(--bg-2));
+        }
 
-    /* Grid & cards */
-    main{padding: min(5vw, 40px)} 
-    .grid{display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: clamp(.6rem, 2.5vw, 1.1rem)}
-    .card{ position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.5rem; padding:.9rem; border-radius:22px; background:var(--card); box-shadow: var(--shadow); isolation:isolate; outline:none; transition:.2s transform, .2s box-shadow }
-    .card:hover{transform: translateY(-3px) scale(1.02)}
-    .card:focus-visible{box-shadow: 0 0 0 3px #000, 0 0 0 6px #fff}
-    .card.playing{animation: bop .55s ease-in-out both}
-    @keyframes bop{0%{transform:scale(1)} 45%{transform:scale(1.1)} 100%{transform:scale(1)}}
+        .layer.mountains {
+            display: flex;
+            align-items: flex-end;
+            opacity: .22;
+            filter: blur(.5px);
+        }
 
-    .art{width:100%; aspect-ratio: 1 / 1; display:grid; place-items:center}
-    .art svg{width:100%; height:100%}
-    .art img{width:100%; height:100%; object-fit:cover; border-radius:18px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06)}
-    .cat{position:absolute; top:10px; right:12px; font-size:.7rem; opacity:.65; background:#fff8; padding:.12rem .5rem; border-radius:999px}
+        .layer.mountains svg {
+            width: 100vw;
+            height: 45vh;
+        }
 
-    .confetti{position:absolute; inset:0; pointer-events:none; overflow:visible}
-    .confetti i{position:absolute; font-style:normal; will-change:transform, opacity}
+        .layer.hills {
+            display: flex;
+            align-items: flex-end;
+            opacity: .35
+        }
 
-    /* Quiz */
-    #quizPage .quiz-wrap{display:grid; gap:1rem; background:var(--card); border-radius:20px; padding:1rem; box-shadow: var(--shadow)}
-    .quiz-top{display:flex; gap:1rem; align-items:center; flex-wrap:wrap}
-    .q-image{width:min(420px, 100%); aspect-ratio:1/1; background:#fff; border-radius:16px; overflow:hidden; box-shadow: inset 0 0 0 1px rgba(0,0,0,.06)}
-    .q-image img{width:100%; height:100%; object-fit:cover}
-    .q-meta{display:grid; gap:.4rem; font-weight:700}
-    .quiz-options{display:grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap:.8rem}
-    .option{background:#fff; border-radius:16px; padding:.5rem; box-shadow: var(--shadow); outline:none}
-    .option .art{aspect-ratio:1/1}
-    .option.correct{box-shadow: 0 0 0 3px #20d67b}
-    .option.wrong{box-shadow: 0 0 0 3px #ff5b6b}
-    .quiz-controls{display:flex; gap:.5rem; justify-content:flex-end}
+        .layer.hills svg {
+            width: 100vw;
+            height: 40vh;
+        }
 
-    footer{padding: 2rem 1rem 4rem; text-align:center; opacity:.8}
-    .hidden{display:none!important}
-  </style>
+        .layer.clouds {
+            overflow: hidden
+        }
+
+        .cloud {
+            position: absolute;
+            top: 10vh;
+            left: -30vw;
+            opacity: .9;
+            filter: drop-shadow(0 8px 12px rgba(0, 0, 0, .15));
+            animation: drift linear infinite
+        }
+
+        .cloud svg {
+            width: 180px;
+            height: auto
+        }
+
+        @keyframes drift {
+            from {
+                transform: translateX(-30vw)
+            }
+            to {
+                transform: translateX(130vw)
+            }
+        }
+
+        .layer.grass {
+            display: flex;
+            align-items: flex-end;
+            mix-blend-mode: multiply
+        }
+
+        .layer.grass:before {
+            content: "";
+            width: 100vw;
+            height: 18vh;
+            display: block;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, .06)),
+            repeating-linear-gradient(90deg, #a6ff9f 0 30px, #78f28e 30px 60px);
+            box-shadow: 0 -6px 20px rgba(0, 0, 0, .15) inset;
+            opacity: .75
+        }
+
+        /* --- CONTENT STYLES --- */
+        .main-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .correct {
+            background-color: #4ade80 !important; /* green-400 */
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .incorrect {
+            background-color: #f87171 !important; /* red-400 */
+            color: white;
+            opacity: 0.7;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .category-btn.active {
+            background-color: #fbbf24; /* amber-400 */
+            color: #1f2937; /* gray-800 */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -2px rgba(0, 0, 0, .1);
+        }
+
+        /* Fun Fact Modal */
+        #fun-fact-modal {
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .fun-fact-button {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid white;
+            transition: background-color 0.2s;
+        }
+
+        .fun-fact-button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        /* Chat styles */
+        .chat-message {
+            padding: 8px 12px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            max-width: 80%;
+        }
+
+        .user-message {
+            background-color: #3b82f6; /* blue-500 */
+            color: white;
+            align-self: flex-end;
+        }
+
+        .ai-message {
+            background-color: #e5e7eb; /* gray-200 */
+            color: #1f2937; /* gray-800 */
+            align-self: flex-start;
+        }
+
+        /* Song word button */
+        .song-word-btn {
+            transition: all 0.2s ease;
+        }
+
+        .song-word-btn.selected {
+            background-color: #22c55e; /* green-500 */
+            color: white;
+            transform: scale(1.1);
+        }
+    </style>
 </head>
 <body>
-  <!-- Parallax background layers -->
-  <div class="parallax" aria-hidden="true">
-    <div class="layer sky" data-speed="0.08"></div>
-    <div class="layer mountains" data-speed="0.04">
-      <svg viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M0 80 L20 55 L40 80 L65 40 L95 85 L120 50 L145 85 L170 60 L200 85 L200 100 L0 100 Z" fill="#3b6fa7"/>
-      </svg>
+
+<!-- Static background layers -->
+<div class="background-container" aria-hidden="true">
+    <div class="layer sky"></div>
+    <div class="layer mountains">
+        <svg viewBox="0 0 200 100" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+            <path d="M0 80 L20 55 L40 80 L65 40 L95 85 L120 50 L145 85 L170 60 L200 85 L200 100 L0 100 Z" fill="#3b6fa7"/>
+        </svg>
     </div>
-    <div class="layer hills" data-speed="0.09">
-      <svg viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M0 90 Q25 70 50 90 T100 90 T150 90 T200 90 L200 100 L0 100 Z" fill="#66d17a"/>
-      </svg>
+    <div class="layer hills">
+        <svg viewBox="0 0 200 100" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+            <path d="M0 90 Q25 70 50 90 T100 90 T150 90 T200 90 L200 100 L0 100 Z" fill="#66d17a"/>
+        </svg>
     </div>
-    <div class="layer clouds" data-speed="0.18" id="cloud-layer"></div>
-    <div class="layer grass" data-speed="0.25"></div>
-  </div>
+    <div class="layer clouds" id="cloud-layer"></div>
+    <div class="layer grass"></div>
+</div>
 
-  <div class="app" role="application" aria-label="Learning English for Kids">
-    <header>
-      <div class="topbar">
-        <div class="brand">
-          <div class="logo" aria-hidden="true"></div>
-          <h1>Learning English for Kids</h1>
-        </div>
-        <div class="controls" aria-label="Sound and appearance settings">
-          <div class="control">
-            <label for="voice">Voice</label>
-            <select id="voice" aria-label="Voice"></select>
-          </div>
-          <div class="control">
-            <label for="volume">Volume</label>
-            <input type="range" id="volume" min="0" max="1" step="0.05" value="0.9" />
-          </div>
-          <div class="control">
-            <label for="rate">Speed</label>
-            <input type="range" id="rate" min="0.6" max="1.2" step="0.05" value="0.95" />
-          </div>
-          <div class="control">
-            <label for="pitch">Pitch</label>
-            <input type="range" id="pitch" min="0.6" max="1.4" step="0.05" value="1.05" />
-          </div>
-          <div class="control">
-            <label for="mute">Mute</label><input id="mute" type="checkbox" />
-          </div>
-          <div class="control">
-            <label for="contrast">High contrast</label><input id="contrast" type="checkbox" />
-          </div>
-          <button class="btn" id="test-voice" title="Hear a sample">Test Voice</button>
-          <button class="btn" id="shuffle" title="Shuffle the current category">Shuffle</button>
-        </div>
-      </div>
-      <div class="control" style="margin: .5rem 1rem 0">
-        <label for="artStyle">Art style</label>
-        <select id="artStyle" aria-label="Art style">
-          <option value="photo" selected>Photos (realistic)</option>
-          <option value="cartoon">Cartoon</option>
-        </select>
-      </div>
+<!-- Main Content -->
+<div class="main-content">
+    <div class="container mx-auto p-4 md:p-8">
 
-      <nav class="tabs" aria-label="Pages">
-        <button class="tab" id="tab-learn" aria-selected="true">Learn</button>
-        <button class="tab" id="tab-quiz" aria-selected="false">Quiz</button>
-      </nav>
+        <!-- Header -->
+        <header class="text-center mb-8 pt-8">
+            <h1 class="font-fredoka text-5xl md:text-7xl text-white text-shadow-lg" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.4);">Learning English for Kids</h1>
+            <p class="text-white text-lg mt-2 font-semibold" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.4);">Vocabulary, Quizzes, Riddles & AI Stories!</p>
+        </header>
 
-      <div class="filters" id="filters" role="toolbar" aria-label="Categories"></div>
-    </header>
+        <!-- Main Navigation -->
+        <nav class="flex justify-center flex-wrap gap-4 mb-8">
+            <button id="show-vocab-btn" class="font-fredoka text-xl bg-yellow-400 hover:bg-yellow-500 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Vocabulary</button>
+            <button id="show-quiz-btn" class="font-fredoka text-xl bg-pink-500 hover:bg-pink-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Quiz</button>
+            <button id="show-riddle-btn" class="font-fredoka text-xl bg-cyan-500 hover:bg-cyan-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Riddles</button>
+            <button id="show-story-btn" class="font-fredoka text-xl bg-purple-500 hover:bg-purple-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Story Time</button>
+            <button id="show-drawing-btn" class="font-fredoka text-xl bg-red-500 hover:bg-red-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Drawing Time</button>
+            <button id="show-chat-btn" class="font-fredoka text-xl bg-indigo-500 hover:bg-indigo-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Chat Time</button>
+            <button id="show-song-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Song Time</button>
+            <button id="show-sentence-btn" class="font-fredoka text-xl bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Sentence Scramble</button>
+            <button id="show-spelling-btn" class="font-fredoka text-xl bg-rose-500 hover:bg-rose-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Spelling Bee</button>
+            <button id="show-picture-detective-btn" class="font-fredoka text-xl bg-lime-500 hover:bg-lime-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Picture Detective</button>
+            <button id="show-tongue-twister-btn" class="font-fredoka text-xl bg-teal-500 hover:bg-teal-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Tongue Twisters</button>
+        </nav>
 
-    <main>
-      <section id="learnPage">
-        <div class="grid" id="grid" aria-live="polite"></div>
-      </section>
-      <section id="quizPage" class="hidden" aria-labelledby="tab-quiz">
-        <div class="quiz-wrap">
-          <div class="quiz-top">
-            <div class="q-image" id="qImage" role="img" aria-label="Question image"></div>
-            <div class="q-meta">
-              <div id="qCounter">Question 1/10</div>
-              <div id="qPrompt">Which picture matches?</div>
-              <div id="qScore">Score: 0</div>
+        <!-- Vocabulary Section -->
+        <section id="vocabulary-section">
+            <div id="category-buttons" class="flex justify-center flex-wrap gap-3 mb-6 bg-white/20 backdrop-blur-sm p-4 rounded-xl"></div>
+            <div id="vocabulary-grid-container"></div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quiz-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <div id="quiz-start-screen">
+                    <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">Quiz Time!</h2>
+                    <p class="text-center text-gray-600 mb-6">Let's see what you've learned. Click the button to start!</p>
+                    <div class="text-center">
+                        <button id="start-quiz-btn" class="font-fredoka text-2xl bg-green-500 hover:bg-green-600 text-white py-4 px-10 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Start Quiz</button>
+                    </div>
+                </div>
+                <div id="quiz-game-screen" class="hidden">
+                    <div class="flex justify-between items-center mb-4"><h2 class="text-2xl font-bold text-gray-700 font-fredoka">Question <span id="question-number">1</span></h2>
+                        <div class="text-xl font-bold bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md">Score: <span id="score">0</span></div>
+                    </div>
+                    <p class="text-xl text-center text-gray-800 mb-4 font-semibold">What is this?</p>
+                    <div id="quiz-image-container" class="flex justify-center mb-6"></div>
+                    <div id="quiz-options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                    <div id="quiz-feedback" class="text-center mt-6"></div>
+                </div>
             </div>
-          </div>
-          <div class="quiz-options" id="qOptions"></div>
-          <div class="quiz-controls">
-            <button class="btn" id="qReveal">Show answer</button>
-            <button class="btn" id="qNext">Next</button>
-          </div>
+        </section>
+
+        <!-- Riddle Section -->
+        <section id="riddle-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <div id="riddle-start-screen">
+                    <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ AI Riddle Time ✨</h2>
+                    <p class="text-center text-gray-600 mb-6">Let's solve a riddle! The AI will think of one for you.</p>
+                    <div class="text-center">
+                        <button id="start-riddle-btn" class="font-fredoka text-2xl bg-green-500 hover:bg-green-600 text-white py-4 px-10 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Start Riddles</button>
+                    </div>
+                </div>
+                <div id="riddle-game-screen" class="hidden">
+                    <h2 class="text-2xl font-bold text-center text-gray-700 font-fredoka mb-4">What am I?</h2>
+                    <div id="riddle-text" class="bg-white p-4 rounded-lg shadow-inner min-h-[100px] text-gray-700 text-center text-xl mb-6 flex items-center justify-center"></div>
+                    <div id="riddle-options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                    <div id="riddle-feedback" class="text-center mt-6"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Story Section -->
+        <section id="story-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ AI Story Time ✨</h2>
+                <p class="text-center text-gray-600 mb-6">Let's create a brand new story! Click the button and let the magic happen.</p>
+                <div class="flex justify-center flex-wrap gap-4 mb-6">
+                    <button id="generate-story-btn" class="font-fredoka text-2xl bg-teal-500 hover:bg-teal-600 text-white py-4 px-10 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed">Tell me a story!</button>
+                    <button id="continue-story-btn" class="hidden font-fredoka text-2xl bg-sky-500 hover:bg-sky-600 text-white py-4 px-10 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300 disabled:bg-gray-400">What happens next?</button>
+                </div>
+                <div id="story-output" class="bg-white p-6 rounded-lg shadow-inner min-h-[200px] text-gray-700 leading-relaxed"><p class="text-gray-500">Your magical story will appear here...</p></div>
+                <div id="story-audio-controls" class="text-center mt-4 hidden">
+                    <button id="read-story-btn" class="font-fredoka text-xl bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed">Read it to me!</button>
+                    <div id="audio-player-container" class="mt-4"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Drawing Section -->
+        <section id="drawing-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ AI Drawing Time ✨</h2>
+                <p class="text-center text-gray-600 mb-2">Type what you want to draw! Try using the words you've learned.</p>
+                <p class="text-center text-gray-500 text-sm mb-4">For example: "A happy lion eating a red apple"</p>
+                <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                    <input type="text" id="drawing-prompt" class="flex-grow p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent" placeholder="Type your drawing idea here...">
+                    <button id="generate-drawing-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300 disabled:bg-gray-400">Draw!</button>
+                    <a id="download-drawing-btn" class="hidden font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300 text-center" href="#" download="ai-drawing.webp">Download</a>
+                </div>
+                <div id="drawing-output" class="bg-white p-4 rounded-lg shadow-inner min-h-[300px] flex items-center justify-center">
+                    <p class="text-gray-500">Your drawing will appear here!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chat Section -->
+        <section id="chat-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ Chat with Pip the Parrot ✨</h2>
+                <div id="chat-log" class="bg-white p-4 rounded-lg shadow-inner h-80 overflow-y-auto flex flex-col mb-4">
+                    <div class="ai-message chat-message">Hi there! My name is Pip. What do you want to talk about?</div>
+                </div>
+                <form id="chat-form" class="flex gap-2">
+                    <input type="text" id="chat-input" class="flex-grow p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent" placeholder="Ask Pip a question...">
+                    <button type="submit" id="chat-send-btn" class="font-fredoka text-xl bg-indigo-500 hover:bg-indigo-600 text-white py-3 px-6 rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300 disabled:bg-gray-400">Send</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Song Section -->
+        <section id="song-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ AI Song Time ✨</h2>
+                <p class="text-center text-gray-600 mb-4">Pick up to 3 words and the AI will write a song for you!</p>
+                <div id="song-words-selection" class="flex justify-center flex-wrap gap-3 mb-6 bg-white/20 p-4 rounded-xl"></div>
+                <div class="text-center mb-6">
+                    <button id="generate-song-btn" class="font-fredoka text-2xl bg-green-500 hover:bg-green-600 text-white py-4 px-10 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300 disabled:bg-gray-400">Write a Song!</button>
+                </div>
+                <div id="song-output" class="bg-white p-6 rounded-lg shadow-inner min-h-[150px] text-gray-700 leading-relaxed"><p class="text-gray-500">Your song will appear here...</p></div>
+                <div id="song-audio-controls" class="text-center mt-4 hidden">
+                    <button id="read-song-btn" class="font-fredoka text-xl bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300 disabled:bg-gray-400">Sing it to me!</button>
+                    <div id="song-audio-player" class="mt-4"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sentence Scramble Section -->
+        <section id="sentence-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ Sentence Scramble ✨</h2>
+                <p class="text-center text-gray-600 mb-6">Unscramble the words to make a sentence!</p>
+                <div id="sentence-answer-area" class="bg-white p-4 rounded-lg shadow-inner min-h-[60px] text-gray-700 text-2xl font-semibold mb-4 flex items-center justify-center"></div>
+                <div id="sentence-words-container" class="flex justify-center flex-wrap gap-3 mb-6 min-h-[50px]"></div>
+                <div id="sentence-controls" class="flex justify-center gap-4">
+                    <button id="sentence-check-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full shadow-lg">Check</button>
+                    <button id="sentence-clear-btn" class="font-fredoka text-xl bg-gray-500 hover:bg-gray-600 text-white py-3 px-8 rounded-full shadow-lg">Clear</button>
+                    <button id="sentence-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Sentence</button>
+                </div>
+                <div id="sentence-feedback" class="text-center mt-4 text-2xl font-bold"></div>
+            </div>
+        </section>
+
+        <!-- Spelling Bee Section -->
+        <section id="spelling-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <div id="spelling-start-screen">
+                    <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ Spelling Bee ✨</h2>
+                    <p class="text-center text-gray-600 mb-6">Ready to test your spelling? Click the button to start!</p>
+                    <div class="text-center">
+                        <button id="start-spelling-btn" class="font-fredoka text-2xl bg-green-500 hover:bg-green-600 text-white py-4 px-10 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Start Spelling</button>
+                    </div>
+                </div>
+                <div id="spelling-game-screen" class="hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-3xl font-bold text-gray-800 font-fredoka">Spelling Bee</h2>
+                        <div class="text-xl font-bold bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md">Score: <span id="spelling-score">0</span></div>
+                    </div>
+                    <p class="text-center text-gray-600 mb-6">Listen to the word and spell it correctly!</p>
+                    <div class="flex justify-center items-center gap-4 mb-6">
+                        <button id="spelling-listen-btn" class="font-fredoka text-4xl bg-yellow-400 hover:bg-yellow-500 text-white w-20 h-20 rounded-full shadow-lg flex items-center justify-center">🔊</button>
+                        <div id="spelling-audio-player"></div>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                        <input type="text" id="spelling-input" class="flex-grow p-3 text-2xl border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent" placeholder="Type the word here...">
+                        <button id="spelling-check-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-lg">Check</button>
+                    </div>
+                    <div id="spelling-feedback" class="text-center mt-4 text-2xl font-bold"></div>
+                    <div class="text-center mt-6">
+                        <button id="spelling-next-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">Next Word</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Picture Detective Section -->
+        <section id="picture-detective-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ Picture Detective ✨</h2>
+                <p class="text-center text-gray-600 mb-6">Look at the picture and describe what you see!</p>
+                <div id="detective-image-container" class="bg-white p-4 rounded-lg shadow-inner min-h-[300px] flex items-center justify-center mb-4">
+                    <p class="text-gray-500">A surprise picture will appear here!</p>
+                </div>
+                <textarea id="detective-description-input" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent" rows="3" placeholder="Type your description here..."></textarea>
+                <div id="detective-feedback" class="text-center my-4 text-lg font-semibold min-h-[50px]"></div>
+                <div class="flex justify-center gap-4">
+                    <button id="detective-check-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full shadow-lg">Check My Description</button>
+                    <button id="detective-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Picture</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tongue Twister Section -->
+        <section id="tongue-twister-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ Tongue Twister Time ✨</h2>
+                <p class="text-center text-gray-600 mb-6">Let's say something silly! Click the button for a new tongue twister.</p>
+                <div class="text-center mb-6">
+                    <button id="generate-twister-btn" class="font-fredoka text-2xl bg-pink-500 hover:bg-pink-600 text-white py-4 px-10 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300 disabled:bg-gray-400">New Tongue Twister!</button>
+                </div>
+                <div id="twister-output" class="bg-white p-6 rounded-lg shadow-inner min-h-[100px] text-gray-700 text-2xl text-center flex items-center justify-center font-semibold"><p class="text-gray-500">Your tongue twister will appear here...</p></div>
+                <div id="twister-audio-controls" class="text-center mt-4 hidden">
+                    <button id="read-twister-btn" class="font-fredoka text-xl bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300 disabled:bg-gray-400">Read it to me!</button>
+                    <div id="twister-audio-player-container" class="mt-4"></div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+<!-- Fun Fact Modal -->
+<div id="fun-fact-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 opacity-0">
+    <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-md w-full relative transform scale-95 transition-transform duration-300">
+        <button id="close-modal-btn" class="absolute top-2 right-2 text-2xl text-gray-500 hover:text-gray-800">&times;</button>
+        <h3 id="fun-fact-title" class="text-2xl font-bold text-center text-gray-800 mb-4 font-fredoka">Fun Fact!</h3>
+        <div id="fun-fact-content" class="text-gray-700 text-lg min-h-[80px]"></div>
+        <div id="fun-fact-audio-controls" class="text-center mt-4">
+            <button id="read-fact-btn" class="font-fredoka text-lg bg-orange-500 hover:bg-orange-600 text-white py-2 px-6 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300 disabled:bg-gray-400">Read it!</button>
+            <div id="fact-audio-player" class="mt-2"></div>
         </div>
-      </section>
-    </main>
+    </div>
+</div>
 
-    <footer>
-      Tip: Click a picture to hear its name! Use the controls above to adjust the voice. Made with ❤️ for curious minds.
-    </footer>
-  </div>
-
-  <template id="cloud-svg">
+<template id="cloud-svg">
     <svg viewBox="0 0 120 70" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <g fill="#fff">
-        <ellipse cx="35" cy="40" rx="24" ry="16"/>
-        <ellipse cx="55" cy="32" rx="20" ry="14"/>
-        <ellipse cx="70" cy="40" rx="18" ry="12"/>
-        <ellipse cx="90" cy="42" rx="22" ry="15"/>
-        <rect x="30" y="40" width="62" height="15" rx="8"/>
-      </g>
-      <circle cx="48" cy="30" r="2" fill="#0002"/>
-      <circle cx="58" cy="30" r="2" fill="#0002"/>
+        <g fill="#fff">
+            <ellipse cx="35" cy="40" rx="24" ry="16"/>
+            <ellipse cx="55" cy="32" rx="20" ry="14"/>
+            <ellipse cx="70" cy="40" rx="18" ry="12"/>
+            <ellipse cx="90" cy="42" rx="22" ry="15"/>
+            <rect x="30" y="40" width="62" height="15" rx="8"/>
+        </g>
+        <circle cx="48" cy="30" r="2" fill="#0002"/>
+        <circle cx="58" cy="30" r="2" fill="#0002"/>
     </svg>
-  </template>
+</template>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- DATA (WITH REAL CARTOON IMAGES) ---
+        const vocabulary = {
+            Animals: [
+                {name: 'Lion', img: 'https://img.freepik.com/free-vector/cute-lion-cartoon-character_1308-113303.jpg'},
+                {name: 'Elephant', img: 'https://img.freepik.com/free-vector/cute-elephant-cartoon-character_1308-107125.jpg'},
+                {name: 'Monkey', img: 'https://img.freepik.com/free-vector/cute-monkey-hanging-tree-cartoon-vector-icon-illustration-animal-nature-icon-concept-isolated-premium-vector-flat-cartoon-style_138676-3836.jpg'},
+                {name: 'Tiger', img: 'https://img.freepik.com/free-vector/cute-tiger-sitting-cartoon-vector-icon-illustration-animal-nature-icon-concept-isolated-premium-vector-flat-cartoon-style_138676-3774.jpg'},
+                {name: 'Bear', img: 'https://img.freepik.com/free-vector/cute-bear-waving-hand-cartoon-vector-icon-illustration-animal-nature-icon-concept-isolated-premium-vector-flat-cartoon-style_138676-3791.jpg'},
+                {name: 'Zebra', img: 'https://img.freepik.com/free-vector/cute-zebra-cartoon-character_1308-107086.jpg'},
+                {name: 'Giraffe', img: 'https://img.freepik.com/free-vector/cute-giraffe-cartoon-character_1308-107119.jpg'},
+                {name: 'Penguin', img: 'https://img.freepik.com/free-vector/cute-penguin-cartoon-character_1308-107129.jpg'},
+                {name: 'Kangaroo', img: 'https://img.freepik.com/free-vector/cute-kangaroo-cartoon-character_1308-107121.jpg'},
+                {name: 'Hippo', img: 'https://img.freepik.com/free-vector/cute-hippopotamus-cartoon-character_1308-107120.jpg'},
+                {name: 'Crocodile', img: 'https://img.freepik.com/free-vector/cute-crocodile-cartoon-character_1308-107118.jpg'},
+                {name: 'Snake', img: 'https://img.freepik.com/free-vector/cute-snake-cartoon-character_1308-107131.jpg'},
+                {name: 'Fox', img: 'https://img.freepik.com/free-vector/cute-fox-cartoon-character_1308-107117.jpg'},
+                {name: 'Wolf', img: 'https://img.freepik.com/free-vector/cute-wolf-cartoon-character_1308-107132.jpg'},
+                {name: 'Deer', img: 'https://img.freepik.com/free-vector/cute-deer-cartoon-character_1308-107116.jpg'},
+            ],
+            Fruits: [
+                {name: 'Apple', img: 'https://img.freepik.com/free-vector/red-apple-cartoon-character_1308-107111.jpg'},
+                {name: 'Banana', img: 'https://img.freepik.com/free-vector/banana-cartoon-character_1308-107112.jpg'},
+                {name: 'Orange', img: 'https://img.freepik.com/free-vector/orange-cartoon-character_1308-107128.jpg'},
+                {name: 'Grapes', img: 'https://img.freepik.com/free-vector/grapes-cartoon-character_1308-107115.jpg'},
+                {name: 'Strawberry', img: 'https://img.freepik.com/free-vector/strawberry-cartoon-character_1308-107130.jpg'},
+                {name: 'Watermelon', img: 'https://img.freepik.com/free-vector/watermelon-cartoon-character_1308-107133.jpg'},
+                {name: 'Pineapple', img: 'https://img.freepik.com/free-vector/pineapple-cartoon-character_1308-107127.jpg'},
+                {name: 'Mango', img: 'https://img.freepik.com/free-vector/mango-cartoon-character_1308-107124.jpg'},
+                {name: 'Peach', img: 'https://img.freepik.com/free-vector/peach-cartoon-character_1308-107126.jpg'},
+                {name: 'Cherry', img: 'https://img.freepik.com/free-vector/cherry-cartoon-character_1308-107114.jpg'},
+                {name: 'Pear', img: 'https://img.freepik.com/free-vector/pear-cartoon-character_1308-107123.jpg'},
+                {name: 'Kiwi', img: 'https://img.freepik.com/free-vector/kiwi-cartoon-character_1308-107122.jpg'},
+                {name: 'Plum', img: 'https://img.freepik.com/free-vector/plum-cartoon-character_1308-107129.jpg'},
+                {name: 'Blueberry', img: 'https://img.freepik.com/free-vector/blueberry-cartoon-character_1308-107113.jpg'},
+                {name: 'Lemon', img: 'https://img.freepik.com/free-vector/lemon-cartoon-character_1308-107123.jpg'},
+            ],
+            Vehicles: [
+                {name: 'Car', img: 'https://img.freepik.com/free-vector/red-car-cartoon-character_1308-107110.jpg'},
+                {name: 'Bus', img: 'https://img.freepik.com/free-vector/yellow-bus-cartoon-character_1308-107134.jpg'},
+                {name: 'Airplane', img: 'https://img.freepik.com/free-vector/airplane-cartoon-character_1308-107109.jpg'},
+                {name: 'Boat', img: 'https://img.freepik.com/free-vector/boat-cartoon-character_1308-107113.jpg'},
+                {name: 'Train', img: 'https://img.freepik.com/free-vector/train-cartoon-character_1308-107132.jpg'},
+                {name: 'Motorcycle', img: 'https://img.freepik.com/free-vector/motorcycle-cartoon-character_1308-107126.jpg'},
+                {name: 'Helicopter', img: 'https://img.freepik.com/free-vector/helicopter-cartoon-character_1308-107119.jpg'},
+                {name: 'Truck', img: 'https://img.freepik.com/free-vector/truck-cartoon-character_1308-107133.jpg'},
+                {name: 'Bicycle', img: 'https://img.freepik.com/free-vector/bicycle-cartoon-character_1308-107112.jpg'},
+                {name: 'Submarine', img: 'https://img.freepik.com/free-vector/submarine-cartoon-character_1308-107131.jpg'},
+                {name: 'Rocket', img: 'https://img.freepik.com/free-vector/rocket-cartoon-character_1308-107130.jpg'},
+                {name: 'Van', img: 'https://img.freepik.com/free-vector/van-cartoon-character_1308-107134.jpg'},
+                {name: 'Tractor', img: 'https://img.freepik.com/free-vector/tractor-cartoon-character_1308-107132.jpg'},
+            ],
+            Colors: [
+                {name: 'Red', img: 'https://img.freepik.com/free-vector/red-color-splash-cartoon-character_1308-107111.jpg'},
+                {name: 'Blue', img: 'https://img.freepik.com/free-vector/blue-color-splash-cartoon-character_1308-107113.jpg'},
+                {name: 'Green', img: 'https://img.freepik.com/free-vector/green-color-splash-cartoon-character_1308-107115.jpg'},
+                {name: 'Yellow', img: 'https://img.freepik.com/free-vector/yellow-color-splash-cartoon-character_1308-107134.jpg'},
+                {name: 'Purple', img: 'https://img.freepik.com/free-vector/purple-color-splash-cartoon-character_1308-107129.jpg'},
+                {name: 'Black', img: 'https://img.freepik.com/free-vector/black-color-splash-cartoon-character_1308-107112.jpg'},
+                {name: 'White', img: 'https://img.freepik.com/free-vector/white-color-splash-cartoon-character_1308-107133.jpg'},
+                {name: 'Orange', img: 'https://img.freepik.com/free-vector/orange-color-splash-cartoon-character_1308-107128.jpg'},
+                {name: 'Pink', img: 'https://img.freepik.com/free-vector/pink-color-splash-cartoon-character_1308-107129.jpg'},
+                {name: 'Brown', img: 'https://img.freepik.com/free-vector/brown-color-splash-cartoon-character_1308-107114.jpg'},
+                {name: 'Gray', img: 'https://img.freepik.com/free-vector/gray-color-splash-cartoon-character_1308-107118.jpg'},
+            ],
+            Shapes: [
+                {name: 'Circle', img: 'https://img.freepik.com/free-vector/circle-cartoon-character_1308-107114.jpg'},
+                {name: 'Square', img: 'https://img.freepik.com/free-vector/square-cartoon-character_1308-107131.jpg'},
+                {name: 'Triangle', img: 'https://img.freepik.com/free-vector/triangle-cartoon-character_1308-107132.jpg'},
+                {name: 'Star', img: 'https://img.freepik.com/free-vector/star-cartoon-character_1308-107130.jpg'},
+                {name: 'Heart', img: 'https://img.freepik.com/free-vector/heart-cartoon-character_1308-107119.jpg'},
+                {name: 'Rectangle', img: 'https://img.freepik.com/free-vector/rectangle-cartoon-character_1308-107130.jpg'},
+                {name: 'Oval', img: 'https://img.freepik.com/free-vector/oval-cartoon-character_1308-107128.jpg'},
+                {name: 'Diamond', img: 'https://img.freepik.com/free-vector/diamond-cartoon-character_1308-107115.jpg'},
+                {name: 'Pentagon', img: 'https://img.freepik.com/free-vector/pentagon-cartoon-character_1308-107129.jpg'},
+                {name: 'Hexagon', img: 'https://img.freepik.com/free-vector/hexagon-cartoon-character_1308-107120.jpg'},
+            ],
+            'Classroom Objects': [
+                {name: 'Book', img: 'https://img.freepik.com/free-vector/book-cartoon-character_1308-107113.jpg'},
+                {name: 'Pencil', img: 'https://img.freepik.com/free-vector/pencil-cartoon-character_1308-107129.jpg'},
+                {name: 'Chair', img: 'https://img.freepik.com/free-vector/chair-cartoon-character_1308-107114.jpg'},
+                {name: 'Table', img: 'https://img.freepik.com/free-vector/table-cartoon-character_1308-107131.jpg'},
+                {name: 'Backpack', img: 'https://img.freepik.com/free-vector/backpack-cartoon-character_1308-107112.jpg'},
+                {name: 'Scissors', img: 'https://img.freepik.com/free-vector/scissors-cartoon-character_1308-107130.jpg'},
+                {name: 'Glue', img: 'https://img.freepik.com/free-vector/glue-cartoon-character_1308-107118.jpg'},
+                {name: 'Crayon', img: 'https://img.freepik.com/free-vector/crayon-cartoon-character_1308-107115.jpg'},
+                {name: 'Ruler', img: 'https://img.freepik.com/free-vector/ruler-cartoon-character_1308-107130.jpg'},
+                {name: 'Blackboard', img: 'https://img.freepik.com/free-vector/blackboard-cartoon-character_1308-107112.jpg'},
+                {name: 'Globe', img: 'https://img.freepik.com/free-vector/globe-cartoon-character_1308-107118.jpg'},
+            ]
+        };
+        const allItems = [].concat(...Object.values(vocabulary));
 
-  <script>
-    // =============================================
-    //  REALISTIC PHOTOS (Public Domain via Openverse) + QUIZ PAGE
-    // =============================================
+        // --- ELEMENTS ---
+        const vocabSection = document.getElementById('vocabulary-section');
+        const categoryButtonsContainer = document.getElementById('category-buttons');
+        const vocabGridContainer = document.getElementById('vocabulary-grid-container');
+        const quizSection = document.getElementById('quiz-section');
+        const storySection = document.getElementById('story-section');
+        const riddleSection = document.getElementById('riddle-section');
+        const drawingSection = document.getElementById('drawing-section');
+        const chatSection = document.getElementById('chat-section');
+        const songSection = document.getElementById('song-section');
+        const sentenceSection = document.getElementById('sentence-section');
+        const spellingSection = document.getElementById('spelling-section');
+        const pictureDetectiveSection = document.getElementById('picture-detective-section');
+        const tongueTwisterSection = document.getElementById('tongue-twister-section');
+        const showVocabBtn = document.getElementById('show-vocab-btn');
+        const showQuizBtn = document.getElementById('show-quiz-btn');
+        const showStoryBtn = document.getElementById('show-story-btn');
+        const showRiddleBtn = document.getElementById('show-riddle-btn');
+        const showDrawingBtn = document.getElementById('show-drawing-btn');
+        const showChatBtn = document.getElementById('show-chat-btn');
+        const showSongBtn = document.getElementById('show-song-btn');
+        const showSentenceBtn = document.getElementById('show-sentence-btn');
+        const showSpellingBtn = document.getElementById('show-spelling-btn');
+        const showPictureDetectiveBtn = document.getElementById('show-picture-detective-btn');
+        const showTongueTwisterBtn = document.getElementById('show-tongue-twister-btn');
+        const startQuizBtn = document.getElementById('start-quiz-btn');
+        const quizStartScreen = document.getElementById('quiz-start-screen');
+        const quizGameScreen = document.getElementById('quiz-game-screen');
+        const scoreEl = document.getElementById('score');
+        const questionNumberEl = document.getElementById('question-number');
+        const quizImageContainer = document.getElementById('quiz-image-container');
+        const quizOptionsContainer = document.getElementById('quiz-options-container');
+        const quizFeedback = document.getElementById('quiz-feedback');
+        const cloudLayer = document.getElementById('cloud-layer');
+        const generateStoryBtn = document.getElementById('generate-story-btn');
+        const continueStoryBtn = document.getElementById('continue-story-btn');
+        const storyOutput = document.getElementById('story-output');
+        const storyAudioControls = document.getElementById('story-audio-controls');
+        const readStoryBtn = document.getElementById('read-story-btn');
+        const audioPlayerContainer = document.getElementById('audio-player-container');
+        const startRiddleBtn = document.getElementById('start-riddle-btn');
+        const riddleStartScreen = document.getElementById('riddle-start-screen');
+        const riddleGameScreen = document.getElementById('riddle-game-screen');
+        const riddleText = document.getElementById('riddle-text');
+        const riddleOptionsContainer = document.getElementById('riddle-options-container');
+        const riddleFeedback = document.getElementById('riddle-feedback');
+        const funFactModal = document.getElementById('fun-fact-modal');
+        const funFactTitle = document.getElementById('fun-fact-title');
+        const funFactContent = document.getElementById('fun-fact-content');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const readFactBtn = document.getElementById('read-fact-btn');
+        const factAudioPlayer = document.getElementById('fact-audio-player');
+        const generateDrawingBtn = document.getElementById('generate-drawing-btn');
+        const drawingPromptInput = document.getElementById('drawing-prompt');
+        const drawingOutput = document.getElementById('drawing-output');
+        const downloadDrawingBtn = document.getElementById('download-drawing-btn');
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const chatLog = document.getElementById('chat-log');
+        const chatSendBtn = document.getElementById('chat-send-btn');
+        const songWordsSelection = document.getElementById('song-words-selection');
+        const generateSongBtn = document.getElementById('generate-song-btn');
+        const songOutput = document.getElementById('song-output');
+        const songAudioControls = document.getElementById('song-audio-controls');
+        const readSongBtn = document.getElementById('read-song-btn');
+        const songAudioPlayer = document.getElementById('song-audio-player');
+        const sentenceAnswerArea = document.getElementById('sentence-answer-area');
+        const sentenceWordsContainer = document.getElementById('sentence-words-container');
+        const sentenceCheckBtn = document.getElementById('sentence-check-btn');
+        const sentenceClearBtn = document.getElementById('sentence-clear-btn');
+        const sentenceNewBtn = document.getElementById('sentence-new-btn');
+        const sentenceFeedback = document.getElementById('sentence-feedback');
+        const spellingStartScreen = document.getElementById('spelling-start-screen');
+        const startSpellingBtn = document.getElementById('start-spelling-btn');
+        const spellingGameScreen = document.getElementById('spelling-game-screen');
+        const spellingScoreEl = document.getElementById('spelling-score');
+        const spellingListenBtn = document.getElementById('spelling-listen-btn');
+        const spellingAudioPlayer = document.getElementById('spelling-audio-player');
+        const spellingInput = document.getElementById('spelling-input');
+        const spellingCheckBtn = document.getElementById('spelling-check-btn');
+        const spellingFeedback = document.getElementById('spelling-feedback');
+        const spellingNextBtn = document.getElementById('spelling-next-btn');
+        const detectiveImageContainer = document.getElementById('detective-image-container');
+        const detectiveDescriptionInput = document.getElementById('detective-description-input');
+        const detectiveFeedback = document.getElementById('detective-feedback');
+        const detectiveCheckBtn = document.getElementById('detective-check-btn');
+        const detectiveNewBtn = document.getElementById('detective-new-btn');
+        const generateTwisterBtn = document.getElementById('generate-twister-btn');
+        const twisterOutput = document.getElementById('twister-output');
+        const twisterAudioControls = document.getElementById('twister-audio-controls');
+        const readTwisterBtn = document.getElementById('read-twister-btn');
+        const twisterAudioPlayerContainer = document.getElementById('twister-audio-player-container');
 
-    // ------- Utilities -------
-    function contrastFor(hex){
-      try{ const c = hex.replace('#',''); const r = parseInt(c.substring(0,2),16), g = parseInt(c.substring(2,4),16), b = parseInt(c.substring(4,6),16); const l = (0.2126*r + 0.7152*g + 0.0722*b); return l > 150 ? '#213' : '#fff'; }catch{ return '#fff'; }
-    }
-    function hashCode(str){ let h=0; for(let i=0;i<str.length;i++){ h=((h<<5)-h) + str.charCodeAt(i); h|=0; } return Math.abs(h); }
+        let quizState = {questions: [], currentQuestionIndex: 0, score: 0, isAnswered: false};
+        let storyState = { currentStory: '' };
+        let riddleState = {isAnswered: false};
+        let sentenceState = {correctSentence: '', userSentence: []};
+        let spellingState = {currentWord: '', score: 0};
+        let detectiveState = {originalPrompt: ''};
+        let chatHistory = [];
 
-    const COLOR_PALETTE = [ ['Red','#ff4a5b'],['Blue','#5dd1ff'],['Green','#66f0b5'],['Yellow','#ffe27a'],['Purple','#b08cff'],['Orange','#ff9c5a'],['Pink','#ff6db1'],['Teal','#4dded2'],['Lime','#b6ff5a'],['Brown','#c69c6d'],['Gray','#aab7c4'],['Black','#444444'],['White','#ffffff'] ];
+        let sentenceGameStarted = false;
+        let detectiveGameStarted = false;
 
-    // ------- Categories (14) -------
-    const CATEGORY_DEFS = [
-      {name:'Animals', kinds:['Cat','Dog','Bird','Fish','Lion','Elephant','Rabbit','Fox','Panda','Frog','Horse','Tiger','Bear','Giraffe','Zebra','Monkey','Koala','Deer','Wolf','Butterfly']},
-      {name:'Fruits', kinds:['Apple','Banana','Orange','Strawberry','Grapes','Watermelon','Pineapple','Mango','Blueberry','Pear','Peach','Kiwi','Cherry','Lemon','Lime','Papaya','Plum','Raspberry','Coconut','Pomegranate']},
-      {name:'Vegetables', kinds:['Carrot','Tomato','Potato','Cucumber','Broccoli','Cauliflower','Onion','Garlic','Pepper','Corn','Eggplant','Lettuce','Spinach','Pumpkin','Peas','Cabbage','Radish','Beetroot','Asparagus','Zucchini']},
-      {name:'Vehicles', kinds:['Car','Bus','Bike','Train','Plane','Boat','Truck','Rocket','Scooter','Submarine','Helicopter','Tractor','Taxi','Ambulance','Fire Truck','Ship','Hot Air Balloon','Subway','Cable Car','Skateboard']},
-      {name:'Instruments', kinds:['Guitar','Piano','Drum','Trumpet','Violin','Flute','Saxophone','Harp','Tambourine','Xylophone','Cello','Clarinet','Maracas','Ukulele','DJ Mixer','Microphone','Organ','Accordion','Cymbals','Triangle']},
-      {name:'Clothes', kinds:['Shirt','Pants','Hat','Dress','Shoes','Coat','Socks','Gloves','Scarf','Skirt','Jacket','Belt','Shorts','Sweater','Tie','Boots','Cap','Raincoat','Pajamas','Uniform']},
-      {name:'School', kinds:['Book','Pencil','Crayon','Ruler','Eraser','Notebook','Scissors','Glue','Backpack','Clock','Desk','Chair','Marker','Chalk','Globe','Calculator','Compass','Protractor','Paint Brush','Whiteboard']},
-      {name:'Sports', kinds:['Soccer Ball','Basketball','Tennis Ball','Baseball','Bat','Skateboard','Helmet','Whistle','Goal','Trophy','Volleyball','Rugby Ball','Hockey Stick','Skis','Snowboard','Surfboard','Boxing Gloves','Badminton','Ping Pong','Dumbbell']},
-      {name:'Home', kinds:['Sofa','Lamp','Bed','Chair','Table','Cup','Plate','Spoon','TV','Door','Window','Fridge','Oven','Sink','Toilet','Mirror','Clock','Curtains','Plant','Carpet']},
-      {name:'Nature', kinds:['Sun','Moon','Star','Tree','Flower','Cloud','Mountain','Leaf','Raindrop','Mushroom','River','Lake','Ocean','Desert','Forest','Rainbow','Volcano','Beach','Cave','Waterfall']},
-      {name:'Toys', kinds:['Ball','Kite','Robot','Blocks','Teddy','Yo-yo','Drum','Puzzle','Toy Car','Balloon','Doll','Action Figure','Top','Bubble Wand','Frisbee','RC Car','Train Set','Playdough','Marble','Slingshot']},
-      {name:'Tools', kinds:['Hammer','Saw','Wrench','Screwdriver','Drill','Pliers','Tape Measure','Level','Chisel','Axe','Shovel','Rake','Ladder','Paint Roller','Brush','Sander','Clamp','Trowel','Crowbar','Wheelbarrow']},
-      {name:'Jobs', kinds:['Doctor','Nurse','Teacher','Firefighter','Police Officer','Chef','Farmer','Pilot','Engineer','Artist','Musician','Baker','Builder','Driver','Scientist','Dentist','Librarian','Photographer','Vet','Mechanic']},
-      {name:'Ocean Animals', kinds:['Dolphin','Whale','Shark','Octopus','Sea Turtle','Seal','Sea Horse','Crab','Lobster','Jellyfish','Starfish','Manta Ray','Clownfish','Coral','Sea Urchin','Walrus','Penguin','Swordfish','Eel','Seagull']}
-    ];
-    const PER_CATEGORY = 60; // ≥20
-
-    // Cartoon fallback (if user selects Cartoon)
-    function icon(kind, cat, color){
-      const ink = contrastFor(color);
-      const eye = '<circle cx="42" cy="48" r="3" fill="'+ink+'99"/>'+'<circle cx="58" cy="48" r="3" fill="'+ink+'99"/>';
-      const smile = '<path d="M40 60 q10 8 20 0" stroke="'+ink+'a0" stroke-width="3" fill="none" stroke-linecap="round"/>';
-      const w = (s)=>'<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'+s+'</svg>';
-      if(cat==='Animals'){ return w('<circle cx="50" cy="52" r="26" fill="'+color+'"/>'+eye+smile); }
-      return w('<rect x="22" y="34" width="56" height="40" rx="14" fill="'+color+'"/>'+'<text x="50" y="58" text-anchor="middle" fill="'+ink+'" font-size="10" font-weight="700">'+kind+'</text>');
-    }
-
-    function makeItem(word, cat, color){ return { word, cat, svg: icon(word, cat, color) }; }
-    function buildDataset(){
-      const items = [];
-      CATEGORY_DEFS.forEach(def => {
-        const cat = def.name, kinds = def.kinds;
-        for(let i=0;i<PER_CATEGORY;i++){
-          const pair = COLOR_PALETTE[i % COLOR_PALETTE.length];
-          const kind = kinds[i % kinds.length];
-          const label = pair[0]+' '+kind;
-          items.push(makeItem(label, cat, pair[1]));
+        // --- NAVIGATION ---
+        function hideAllSections() {
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => section.classList.add('hidden'));
         }
-      });
-      return items;
-    }
 
-    // ------- Openverse (Public Domain only) -------
-    const IMG_CACHE = new Map();
-    const META_CACHE = new Map();
-    const OPENVERSE_BASE = 'https://api.openverse.org/v1/images/'; // CC0 + Public Domain Mark
+        function showVocab() {
+            hideAllSections();
+            vocabSection.classList.remove('hidden');
+        }
 
-    const COLOR_WORDS = ['red','blue','green','yellow','purple','orange','pink','teal','lime','brown','gray','black','white'];
-    function stripColorPrefix(word){
-      if(!word) return '';
-      const parts = word.split(' ');
-      if(parts.length>1 && COLOR_WORDS.includes(parts[0].toLowerCase())){
-        return parts.slice(1).join(' ');
-      }
-      return word;
-    }
-    function cleanForQuery(text){
-      const lower = String(text||'').toLowerCase();
-      let out='';
-      for(let i=0;i<lower.length;i++){
-        const ch = lower[i];
-        const c = ch.charCodeAt(0);
-        if((c>=97 && c<=122) || ch===' ') out += ch;
-      }
-      return out.trim();
-    }
-    function ovQuery(item){
-      const base = cleanForQuery(stripColorPrefix(item.word));
-      return encodeURIComponent(base + ' ' + item.cat.toLowerCase());
-    }
-    async function fetchOpenverseImage(item){
-      const key = item.word+'|'+item.cat;
-      if(IMG_CACHE.has(key)) return { url: IMG_CACHE.get(key), meta: META_CACHE.get(key) };
-      const url = OPENVERSE_BASE + '?q=' + ovQuery(item) + '&page_size=30&license=cc0,pdm&source=wikimedia,wordpress';
-      const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-      if(!res.ok) throw new Error('Openverse HTTP '+res.status);
-      const data = await res.json();
-      const results = (data && data.results) ? data.results : [];
-      if(!results.length) throw new Error('No results');
-      const pick = results[ hashCode(key) % results.length ];
-      const best = pick.thumbnail || pick.url || pick.foreign_landing_url;
-      if(!best) throw new Error('No image URL');
-      IMG_CACHE.set(key, best);
-      META_CACHE.set(key, { title: pick.title || item.word, creator: pick.creator, license: pick.license, src: pick.url || pick.thumbnail, page: pick.foreign_landing_url });
-      return { url: best, meta: META_CACHE.get(key) };
-    }
+        function showQuiz() {
+            hideAllSections();
+            quizSection.classList.remove('hidden');
+        }
 
-    // ------- UI wiring -------
-    const grid = document.getElementById('grid');
-    const filtersEl = document.getElementById('filters');
-    const artStyleSel = document.getElementById('artStyle');
-    const voiceSel = document.getElementById('voice');
-    const pitchEl = document.getElementById('pitch');
-    const rateEl  = document.getElementById('rate');
-    const volEl   = document.getElementById('volume');
-    const muteEl  = document.getElementById('mute');
+        function showStory() {
+            hideAllSections();
+            storySection.classList.remove('hidden');
+        }
 
-    // Quiz elements
-    const tabLearn = document.getElementById('tab-learn');
-    const tabQuiz  = document.getElementById('tab-quiz');
-    const learnPage = document.getElementById('learnPage');
-    const quizPage  = document.getElementById('quizPage');
-    const qImage   = document.getElementById('qImage');
-    const qOptions = document.getElementById('qOptions');
-    const qCounter = document.getElementById('qCounter');
-    const qPrompt  = document.getElementById('qPrompt');
-    const qScore   = document.getElementById('qScore');
-    const qReveal  = document.getElementById('qReveal');
-    const qNext    = document.getElementById('qNext');
+        function showRiddle() {
+            hideAllSections();
+            riddleSection.classList.remove('hidden');
+        }
 
-    let ITEMS = [], categories = [], activeCat = 'All', filtered = [], visibleCount = 0;
+        function showDrawing() {
+            hideAllSections();
+            drawingSection.classList.remove('hidden');
+        }
 
-    function renderFilters(){
-      filtersEl.innerHTML = '';
-      const dataCats = ['All', ...categories];
-      dataCats.forEach(c => {
-        const b = document.createElement('button');
-        b.className = 'filter-btn';
-        b.setAttribute('aria-pressed', c === activeCat ? 'true' : 'false');
-        b.textContent = c;
-        b.addEventListener('click', () => { activeCat = c; renderFilters(); renderGrid(true); });
-        filtersEl.appendChild(b);
-      });
-    }
+        function showChat() {
+            hideAllSections();
+            chatSection.classList.remove('hidden');
+        }
 
-    const loadMoreBtn = document.createElement('button');
-    loadMoreBtn.id = 'loadMore'; loadMoreBtn.className = 'btn'; loadMoreBtn.style.margin = '1rem auto 0'; loadMoreBtn.style.display = 'block'; loadMoreBtn.textContent = 'Load more';
-    loadMoreBtn.addEventListener('click', ()=>{ visibleCount += 48; drawCards(); });
+        function showSong() {
+            hideAllSections();
+            songSection.classList.remove('hidden');
+        }
 
-    function renderGrid(reset=false){
-      filtered = ITEMS.filter(it => activeCat === 'All' || it.cat === activeCat);
-      if(reset) visibleCount = 0; visibleCount = Math.max(visibleCount, 48); drawCards();
-    }
+        function showSentence() {
+            hideAllSections();
+            sentenceSection.classList.remove('hidden');
+            if (!sentenceGameStarted) {
+                startSentenceGame();
+                sentenceGameStarted = true;
+            }
+        }
 
-    // Lazy load photos for Learn page
-    let io = null;
-    function ensureObserver(){
-      if(io) return;
-      io = new IntersectionObserver((entries)=>{
-        entries.forEach(async (entry)=>{
-          if(!entry.isIntersecting) return;
-          const img = entry.target; io.unobserve(img);
-          const { item } = img.dataset;
-          try{
-            if((artStyleSel && artStyleSel.value) === 'cartoon'){ img.outerHTML = window.atob(img.getAttribute('data-svg')); return; }
-            const parsed = JSON.parse(decodeURIComponent(item));
-            const res = await fetchOpenverseImage(parsed);
-            img.src = res.url; img.alt = (res.meta && res.meta.title) || parsed.word; img.loading = 'lazy';
-          }catch{ img.outerHTML = window.atob(img.getAttribute('data-svg')); }
+        function showSpelling() {
+            hideAllSections();
+            spellingSection.classList.remove('hidden');
+        }
+
+        function showPictureDetective() {
+            hideAllSections();
+            pictureDetectiveSection.classList.remove('hidden');
+            if (!detectiveGameStarted) {
+                startPictureDetectiveGame();
+                detectiveGameStarted = true;
+            }
+        }
+
+        function showTongueTwister() {
+            hideAllSections();
+            tongueTwisterSection.classList.remove('hidden');
+        }
+
+
+        // --- GEMINI API & HELPERS ---
+        const API_KEY = "AIzaSyCx-9BeHzPAJWanCkDmrD14ZBtrc8A28TY";
+
+        async function callGeminiApi(apiUrl, payload, retries = 3, delay = 1000) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(apiUrl, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)});
+                    if (!response.ok) {
+                        let errorBody;
+                        try {
+                            errorBody = await response.json();
+                        } catch (e) {
+                            errorBody = {error: {message: await response.text()}};
+                        }
+                        console.error('API Error:', errorBody);
+                        throw new Error(`API request failed with status ${response.status}`);
+                    }
+                    const text = await response.text();
+                    if (!text) {
+                        console.warn("API returned an empty response for payload:", payload);
+                        return {candidates: [], predictions: []};
+                    }
+                    return JSON.parse(text);
+                } catch (error) {
+                    console.error(`Attempt ${i + 1} failed. Retrying in ${delay}ms...`, error);
+                    if (i === retries - 1) throw error;
+                    await new Promise(res => setTimeout(res, delay));
+                    delay *= 2;
+                }
+            }
+        }
+
+        function base64ToArrayBuffer(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        function pcmToWav(pcmData, numChannels, sampleRate) {
+            const byteRate = sampleRate * numChannels * 2;
+            const blockAlign = numChannels * 2;
+            const dataSize = pcmData.length * 2;
+            const buffer = new ArrayBuffer(44 + dataSize);
+            const view = new DataView(buffer);
+
+            function writeString(view, offset, string) {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            }
+
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + dataSize, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, byteRate, true);
+            view.setUint16(32, blockAlign, true);
+            view.setUint16(34, 16, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, dataSize, true);
+            for (let i = 0; i < pcmData.length; i++) {
+                view.setInt16(44 + i * 2, pcmData[i], true);
+            }
+            return new Blob([view], {type: 'audio/wav'});
+        }
+
+        async function readAloud(text, button, playerContainer) {
+            if (button.disabled) return;
+            const originalContent = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = '<div class="loader" style="width:16px;height:16px;border-width:2px;display:inline-block;margin:0;"></div>';
+            playerContainer.innerHTML = '';
+            try {
+                const payload = {contents: [{parts: [{text: `Say in a friendly, cheerful voice for a child: ${text}`}]}], generationConfig: {responseModalities: ["AUDIO"], speechConfig: {voiceConfig: {prebuiltVoiceConfig: {voiceName: "Puck"}}}}, model: "gemini-2.5-flash-preview-tts"};
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${API_KEY}`;
+                const result = await callGeminiApi(apiUrl, payload);
+                const part = result?.candidates?.[0]?.content?.parts?.[0];
+                const audioData = part?.inlineData?.data;
+                const mimeType = part?.inlineData?.mimeType;
+
+                if (audioData && mimeType && mimeType.startsWith("audio/")) {
+                    const rateMatch = mimeType.match(/rate=(\d+)/);
+                    if (!rateMatch) {
+                        throw new Error("Sample rate not found in MIME type.");
+                    }
+                    const sampleRate = parseInt(rateMatch[1], 10);
+                    const pcmData = base64ToArrayBuffer(audioData);
+                    const pcm16 = new Int16Array(pcmData);
+                    const wavBlob = pcmToWav(pcm16, 1, sampleRate);
+                    const audioUrl = URL.createObjectURL(wavBlob);
+                    const audio = new Audio(audioUrl);
+                    playerContainer.appendChild(audio);
+                    audio.play();
+                    audio.onended = () => {
+                        button.disabled = false;
+                        button.innerHTML = originalContent;
+                    };
+                    return;
+                } else {
+                    throw new Error("Invalid audio data in response.");
+                }
+            } catch (error) {
+                console.error("Failed to generate TTS:", error);
+                playerContainer.innerHTML = '<p class="text-red-500 text-sm">Could not generate audio.</p>';
+            }
+            button.disabled = false;
+            button.innerHTML = originalContent;
+        }
+
+        // --- AI FEATURES ---
+        async function generateStory() {
+            generateStoryBtn.disabled = true;
+            continueStoryBtn.classList.add('hidden');
+            generateStoryBtn.innerHTML = 'Thinking... <div class="loader"></div>';
+            storyOutput.innerHTML = '<p class="text-gray-500">Our AI storyteller is thinking of a tale...</p>';
+            storyAudioControls.classList.add('hidden');
+            audioPlayerContainer.innerHTML = '';
+            try {
+                const shuffled = shuffleArray([...allItems]);
+                const storyWords = shuffled.slice(0, 3).map(item => item.name);
+                const prompt = `Write a short, simple, and fun story for a 5-year-old child. The story must include these three things: a ${storyWords[0]}, a ${storyWords[1]}, and a ${storyWords[2]}. Make the story cheerful, easy to understand, and end on a happy note.`;
+                const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+                const result = await callGeminiApi(apiUrl, payload);
+                if (result.candidates && result.candidates[0].content.parts[0].text) {
+                    const storyText = result.candidates[0].content.parts[0].text;
+                    storyOutput.innerHTML = storyText.replace(/\n/g, '<br>');
+                    storyState.currentStory = storyText;
+                    storyAudioControls.classList.remove('hidden');
+                    continueStoryBtn.classList.remove('hidden');
+                } else {
+                    storyOutput.innerHTML = '<p class="text-red-500">The storyteller got a little stuck. Please try again!</p>';
+                }
+            } catch (error) {
+                console.error("Failed to generate story:", error);
+                storyOutput.innerHTML = '<p class="text-red-500">Oops! Something went wrong. Please check the console and try again.</p>';
+            } finally {
+                generateStoryBtn.disabled = false;
+                generateStoryBtn.textContent = 'Tell me a story!';
+            }
+        }
+
+        async function continueStory() {
+            continueStoryBtn.disabled = true;
+            continueStoryBtn.innerHTML = 'Thinking... <div class="loader"></div>';
+            try {
+                const prompt = `This is a children's story:\n\n${storyState.currentStory}\n\nContinue the story with one or two more simple, fun paragraphs. Make it exciting and happy.`;
+                const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+                const result = await callGeminiApi(apiUrl, payload);
+                if (result.candidates && result.candidates[0].content.parts[0].text) {
+                    const continuationText = result.candidates[0].content.parts[0].text;
+                    storyState.currentStory += "\n\n" + continuationText;
+                    storyOutput.innerHTML = storyState.currentStory.replace(/\n/g, '<br>');
+                } else {
+                    alert("The storyteller couldn't think of what happens next! Try again.");
+                }
+            } catch (error) {
+                console.error("Failed to continue story:", error);
+                alert("Oops! Something went wrong while continuing the story.");
+            } finally {
+                continueStoryBtn.disabled = false;
+                continueStoryBtn.textContent = 'What happens next?';
+            }
+        }
+
+        async function generateImage(prompt) {
+            const payload = {instances: [{prompt: prompt}], parameters: {"sampleCount": 1}};
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${API_KEY}`;
+            const result = await callGeminiApi(apiUrl, payload);
+            if (result.predictions && result.predictions[0].bytesBase64Encoded) {
+                return `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+            } else {
+                throw new Error("No image data in response.");
+            }
+        }
+
+        async function handleChatSubmit(e) {
+            e.preventDefault();
+            const userInput = chatInput.value.trim();
+            if (!userInput) return;
+            chatInput.value = '';
+            chatSendBtn.disabled = true;
+            addChatMessage(userInput, 'user');
+            try {
+                const systemPrompt = "You are a friendly, cartoon parrot named Pip. You love to talk to children. Keep your answers short, simple, and cheerful, using easy words. Always be encouraging.";
+                chatHistory.push({role: "user", parts: [{text: userInput}]});
+                const payload = {
+                    contents: [...chatHistory],
+                    system_instruction: {
+                        parts: [{ text: systemPrompt }]
+                    }
+                };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+                const result = await callGeminiApi(apiUrl, payload);
+                if (result.candidates && result.candidates[0].content.parts[0].text) {
+                    const aiResponse = result.candidates[0].content.parts[0].text;
+                    chatHistory.push({role: "model", parts: [{text: aiResponse}]});
+                    addChatMessage(aiResponse, 'ai');
+                } else {
+                    addChatMessage("Squawk! I'm a little tongue-tied. Try asking something else!", 'ai');
+                }
+            } catch (error) {
+                console.error("Chat error:", error);
+                addChatMessage("Oh no! My beak is tired. Let's try again in a moment.", 'ai');
+            } finally {
+                chatSendBtn.disabled = false;
+            }
+        }
+
+        function addChatMessage(message, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender === 'user' ? 'user-message' : 'ai-message'}`;
+            const textSpan = document.createElement('span');
+            textSpan.textContent = message;
+            messageDiv.appendChild(textSpan);
+            if (sender === 'ai') {
+                const readBtn = document.createElement('button');
+                readBtn.textContent = '🔊';
+                readBtn.className = 'ml-2';
+                readBtn.onclick = () => readAloud(message, readBtn, messageDiv);
+                messageDiv.appendChild(readBtn);
+            }
+            chatLog.appendChild(messageDiv);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+        async function generateSong() {
+            const selectedWords = Array.from(songWordsSelection.querySelectorAll('.selected')).map(btn => btn.textContent);
+            if (selectedWords.length === 0) {
+                alert('Please pick at least one word for the song!');
+                return;
+            }
+            generateSongBtn.disabled = true;
+            generateSongBtn.innerHTML = 'Writing... <div class="loader"></div>';
+            songOutput.innerHTML = '<p class="text-gray-500">The AI is writing a song...</p>';
+            songAudioControls.classList.add('hidden');
+            songAudioPlayer.innerHTML = '';
+            try {
+                const prompt = `Write a very simple, 4-line nursery rhyme for a child that includes the words: ${selectedWords.join(', ')}. Make it cheerful and easy to sing.`;
+                const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+                const result = await callGeminiApi(apiUrl, payload);
+                if (result.candidates && result.candidates[0].content.parts[0].text) {
+                    const songText = result.candidates[0].content.parts[0].text.replace(/\n/g, '<br>');
+                    songOutput.innerHTML = songText;
+                    songAudioControls.classList.remove('hidden');
+                } else {
+                    songOutput.innerHTML = '<p class="text-red-500">The songwriter is taking a break. Please try again!</p>';
+                }
+            } catch (error) {
+                console.error("Failed to generate song:", error);
+                songOutput.innerHTML = '<p class="text-red-500">Oops! Something went wrong.</p>';
+            } finally {
+                generateSongBtn.disabled = false;
+                generateSongBtn.textContent = 'Write a Song!';
+            }
+        }
+
+        function populateSongWords() {
+            songWordsSelection.innerHTML = '';
+            const shuffled = shuffleArray([...allItems]);
+            const words = shuffled.slice(0, 12).map(item => item.name);
+            words.forEach(word => {
+                const button = document.createElement('button');
+                button.textContent = word;
+                button.className = 'song-word-btn font-semibold bg-white text-gray-700 py-2 px-4 rounded-full shadow-md';
+                button.addEventListener('click', () => {
+                    if (button.classList.contains('selected')) {
+                        button.classList.remove('selected');
+                    } else if (songWordsSelection.querySelectorAll('.selected').length < 3) {
+                        button.classList.add('selected');
+                    }
+                });
+                songWordsSelection.appendChild(button);
+            });
+        }
+
+        async function startSentenceGame() {
+            sentenceNewBtn.disabled = true;
+            sentenceWordsContainer.innerHTML = '<div class="loader"></div>';
+            sentenceAnswerArea.innerHTML = '';
+            sentenceFeedback.innerHTML = '';
+            sentenceState.userSentence = [];
+            try {
+                const randomWord = allItems[Math.floor(Math.random() * allItems.length)].name;
+                const prompt = `Create one very simple, grammatically correct sentence for a 5-year-old child that includes the word "${randomWord}". The sentence should be between 4 and 7 words long. Do not add any punctuation.`;
+                const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+                const result = await callGeminiApi(apiUrl, payload);
+                if (result.candidates && result.candidates[0].content.parts[0].text) {
+                    sentenceState.correctSentence = result.candidates[0].content.parts[0].text.trim();
+                    const words = sentenceState.correctSentence.split(' ');
+                    const scrambledWords = shuffleArray([...words]);
+                    sentenceWordsContainer.innerHTML = '';
+                    scrambledWords.forEach(word => {
+                        const btn = document.createElement('button');
+                        btn.textContent = word;
+                        btn.className = 'font-semibold text-lg bg-white hover:bg-blue-100 text-gray-800 p-3 rounded-xl shadow-md';
+                        btn.onclick = () => {
+                            sentenceState.userSentence.push(word);
+                            btn.style.visibility = 'hidden';
+                            updateSentenceAnswerArea();
+                        };
+                        sentenceWordsContainer.appendChild(btn);
+                    });
+                } else {
+                    throw new Error('Could not generate sentence.');
+                }
+            } catch (e) {
+                sentenceWordsContainer.innerHTML = '<p class="text-red-500">Could not create a game. Please try again!</p>';
+            } finally {
+                sentenceNewBtn.disabled = false;
+            }
+        }
+
+        function updateSentenceAnswerArea() {
+            sentenceAnswerArea.textContent = sentenceState.userSentence.join(' ');
+        }
+
+        function clearSentence() {
+            sentenceState.userSentence = [];
+            updateSentenceAnswerArea();
+            sentenceWordsContainer.querySelectorAll('button').forEach(btn => btn.style.visibility = 'visible');
+            sentenceFeedback.innerHTML = '';
+        }
+
+        function checkSentence() {
+            const userAnswer = sentenceState.userSentence.join(' ');
+            if (userAnswer === sentenceState.correctSentence) {
+                sentenceFeedback.textContent = 'Great job! 🎉';
+                sentenceFeedback.className = 'text-center mt-4 text-2xl font-bold text-green-600';
+            } else {
+                sentenceFeedback.textContent = 'Not quite, try again!';
+                sentenceFeedback.className = 'text-center mt-4 text-2xl font-bold text-red-500';
+            }
+        }
+
+        // --- SPELLING BEE ---
+        function startSpellingBee() {
+            spellingStartScreen.classList.add('hidden');
+            spellingGameScreen.classList.remove('hidden');
+            spellingState.score = 0;
+            spellingScoreEl.textContent = spellingState.score;
+            loadNextSpellingWord();
+        }
+
+        async function loadNextSpellingWord() {
+            spellingInput.value = '';
+            spellingFeedback.innerHTML = '';
+            spellingCheckBtn.disabled = false;
+            spellingState.currentWord = allItems[Math.floor(Math.random() * allItems.length)].name;
+            await readAloud(`Spell the word: ${spellingState.currentWord}`, spellingListenBtn, spellingAudioPlayer);
+        }
+
+        function checkSpelling() {
+            const userAnswer = spellingInput.value.trim().toLowerCase();
+            const correctAnswer = spellingState.currentWord.toLowerCase();
+            if (userAnswer === correctAnswer) {
+                spellingFeedback.textContent = 'Correct! 🎉';
+                spellingFeedback.className = 'text-center mt-4 text-2xl font-bold text-green-600';
+                spellingState.score++;
+                spellingScoreEl.textContent = spellingState.score;
+            } else {
+                spellingFeedback.textContent = `Not quite! The word was "${spellingState.currentWord}"`;
+                spellingFeedback.className = 'text-center mt-4 text-2xl font-bold text-red-500';
+            }
+            spellingCheckBtn.disabled = true;
+        }
+
+        // --- PICTURE DETECTIVE ---
+        async function startPictureDetectiveGame() {
+            detectiveNewBtn.disabled = true;
+            detectiveCheckBtn.disabled = true;
+            detectiveImageContainer.innerHTML = '<div class="loader"></div><p class="ml-4 text-gray-500">Thinking of a picture...</p>';
+            detectiveDescriptionInput.value = '';
+            detectiveFeedback.innerHTML = '';
+            try {
+                const promptForPrompt = `Give me a simple, fun, and silly idea for a picture that a child can describe. For example: "A purple hippo wearing a chef's hat" or "Three green snakes having a tea party".`;
+                const payload = {contents: [{role: "user", parts: [{text: promptForPrompt}]}]};
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+                const result = await callGeminiApi(apiUrl, payload);
+                if (result.candidates && result.candidates[0].content.parts[0].text) {
+                    detectiveState.originalPrompt = result.candidates[0].content.parts[0].text.trim();
+                    detectiveImageContainer.innerHTML = '<div class="loader"></div><p class="ml-4 text-gray-500">Drawing the picture...</p>';
+                    const imageUrl = await generateImage(`A simple, cute, and colorful cartoon drawing for a child of: ${detectiveState.originalPrompt}`);
+                    detectiveImageContainer.innerHTML = `<img src="${imageUrl}" class="w-full h-full object-contain rounded-lg" alt="AI generated drawing of ${detectiveState.originalPrompt}">`;
+                } else {
+                    throw new Error("Could not generate a picture idea.");
+                }
+            } catch (e) {
+                detectiveImageContainer.innerHTML = '<p class="text-red-500">Could not create a picture. Please try again!</p>';
+            } finally {
+                detectiveNewBtn.disabled = false;
+                detectiveCheckBtn.disabled = false;
+            }
+        }
+
+        async function checkDescription() {
+            const userDescription = detectiveDescriptionInput.value;
+            if (!userDescription) {
+                alert("Please describe the picture first!");
+                return;
+            }
+            detectiveCheckBtn.disabled = true;
+            detectiveFeedback.innerHTML = '<div class="loader inline-block"></div> Thinking...';
+            try {
+                const prompt = `A child was shown a picture of "${detectiveState.originalPrompt}". The child wrote: "${userDescription}". Provide simple, positive, and encouraging feedback in 1-2 sentences. Mention one thing they got right and one thing they could add.`;
+                const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+                const result = await callGeminiApi(apiUrl, payload);
+                if (result.candidates && result.candidates[0].content.parts[0].text) {
+                    detectiveFeedback.textContent = result.candidates[0].content.parts[0].text;
+                } else {
+                    throw new Error("Could not get feedback.");
+                }
+            } catch (e) {
+                detectiveFeedback.textContent = 'I am not sure what to say! Try again.';
+            } finally {
+                detectiveCheckBtn.disabled = false;
+            }
+        }
+
+        // --- TONGUE TWISTER ---
+        async function generateTongueTwister() {
+            generateTwisterBtn.disabled = true;
+            generateTwisterBtn.innerHTML = 'Thinking... <div class="loader"></div>';
+            twisterOutput.innerHTML = '<p class="text-gray-500">Thinking of a tricky twister...</p>';
+            twisterAudioControls.classList.add('hidden');
+            twisterAudioPlayerContainer.innerHTML = '';
+            try {
+                const randomWord = allItems[Math.floor(Math.random() * allItems.length)].name;
+                const prompt = `Create a very simple, short, and fun tongue twister for a 5-year-old child that repeats the sound of the word '${randomWord}'. For example, if the word is 'snake', you could write 'Silly snakes slide sideways.'`;
+                const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+                const result = await callGeminiApi(apiUrl, payload);
+                if (result.candidates && result.candidates[0].content.parts[0].text) {
+                    const twisterText = result.candidates[0].content.parts[0].text.trim();
+                    twisterOutput.textContent = twisterText;
+                    twisterAudioControls.classList.remove('hidden');
+                } else {
+                    twisterOutput.innerHTML = '<p class="text-red-500">I got my tongue tied! Please try again.</p>';
+                }
+            } catch (error) {
+                console.error("Failed to generate tongue twister:", error);
+                twisterOutput.innerHTML = '<p class="text-red-500">Oops! Something went wrong.</p>';
+            } finally {
+                generateTwisterBtn.disabled = false;
+                generateTwisterBtn.textContent = 'New Tongue Twister!';
+            }
+        }
+
+        // --- VOCABULARY UI ---
+        function displayVocabularyForCategory(categoryName) {
+            vocabGridContainer.innerHTML = '';
+            const items = vocabulary[categoryName];
+            const grid = document.createElement('div');
+            grid.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6';
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden cursor-pointer';
+                card.innerHTML = `<img src="${item.img}" alt="${item.name}" class="w-full h-40 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400/ccc/000?text=Image+Error';"><div class="p-3 text-center"><h3 class="font-bold text-lg text-gray-800">${item.name}</h3></div><button class="fun-fact-button" data-item-name="${item.name}">?</button>`;
+                card.querySelector('img').addEventListener('click', () => speak(item.name));
+                grid.appendChild(card);
+            });
+            vocabGridContainer.appendChild(grid);
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === categoryName) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function createCategoryButtons() {
+            categoryButtonsContainer.innerHTML = '';
+            Object.keys(vocabulary).forEach(category => {
+                const button = document.createElement('button');
+                button.textContent = category;
+                button.className = 'category-btn font-semibold text-white py-2 px-4 rounded-full transition-colors duration-300 hover:bg-yellow-300 hover:text-gray-800';
+                button.addEventListener('click', () => displayVocabularyForCategory(category));
+                categoryButtonsContainer.appendChild(button);
+            });
+        }
+
+        // --- FUN FACT MODAL ---
+        async function showFunFact(itemName) {
+            funFactTitle.textContent = `Fun Fact about ${itemName}!`;
+            funFactContent.innerHTML = '<div class="flex justify-center items-center"><div class="loader"></div></div>';
+            factAudioPlayer.innerHTML = '';
+            funFactModal.classList.remove('hidden');
+            setTimeout(() => {
+                funFactModal.classList.remove('opacity-0');
+                funFactModal.querySelector('div').classList.remove('scale-95');
+            }, 10);
+            try {
+                const prompt = `Tell me one fun, simple fact for a 5-year-old child about a ${itemName}. Keep it to one or two short sentences.`;
+                const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+                const result = await callGeminiApi(apiUrl, payload);
+                if (result.candidates && result.candidates[0].content.parts[0].text) {
+                    funFactContent.textContent = result.candidates[0].content.parts[0].text;
+                } else {
+                    funFactContent.textContent = 'Could not find a fun fact. Try another!';
+                }
+            } catch (e) {
+                funFactContent.textContent = 'Something went wrong!';
+            }
+        }
+
+        function hideFunFact() {
+            funFactModal.classList.add('opacity-0');
+            funFactModal.querySelector('div').classList.add('scale-95');
+            setTimeout(() => {
+                funFactModal.classList.add('hidden');
+            }, 300);
+        }
+
+        vocabGridContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('fun-fact-button')) {
+                showFunFact(e.target.dataset.itemName);
+            }
         });
-      }, { rootMargin: '200px' });
-    }
 
-    function drawCards(){
-      grid.innerHTML = '';
-      const slice = filtered.slice(0, visibleCount);
-      slice.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'card'; card.setAttribute('data-cat', item.cat); card.setAttribute('aria-label', item.word);
-        const svg64 = btoa(item.svg);
-        card.innerHTML = '<div class="cat">'+item.cat+'</div>'+
-                         '<div class="art"><img alt="'+item.word+'" data-item="'+encodeURIComponent(JSON.stringify(item))+'" data-svg="'+svg64+'" referrerpolicy="no-referrer"/></div>'+
-                         '<div class="word">'+item.word+'</div>'+
-                         '<div class="confetti" aria-hidden="true"></div>';
-        const artEl = card.querySelector('.art');
-        artEl.setAttribute('tabindex','0'); artEl.setAttribute('role','button'); artEl.setAttribute('aria-label','Say '+item.word);
-        artEl.addEventListener('click', (e)=>{ if(!e.target.closest('img,svg')) return; playCard(card, item.word); });
-        artEl.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); playCard(card, item.word); }});
-        grid.appendChild(card);
-      });
-      ensureObserver();
-      grid.querySelectorAll('img[data-item]').forEach(img => io.observe(img));
-      if(filtered.length > visibleCount){ if(!loadMoreBtn.isConnected) document.querySelector('main').appendChild(loadMoreBtn); loadMoreBtn.textContent = 'Load more ('+(filtered.length - visibleCount)+' left)'; }
-      else if(loadMoreBtn.isConnected) loadMoreBtn.remove();
-    }
+        // --- RIDDLE GAME ---
+        async function startRiddleGame() {
+            riddleStartScreen.classList.add('hidden');
+            riddleGameScreen.classList.remove('hidden');
+            await loadNextRiddle();
+        }
 
-    function playCard(card, word){ card.classList.add('playing'); setTimeout(() => card.classList.remove('playing'), 550); confetti(card.querySelector('.confetti')); speakWord(word); }
+        async function loadNextRiddle() {
+            riddleState.isAnswered = false;
+            riddleText.innerHTML = '<div class="loader"></div>';
+            riddleOptionsContainer.innerHTML = '';
+            riddleFeedback.innerHTML = '';
+            try {
+                const correctAnswer = allItems[Math.floor(Math.random() * allItems.length)];
+                const prompt = `Create a very simple "What am I?" riddle for a 5-year-old child. The answer is ${correctAnswer.name}. Make it 2-3 short sentences. Do not mention the word "${correctAnswer.name}" in the riddle.`;
+                const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+                const result = await callGeminiApi(apiUrl, payload);
+                if (result.candidates && result.candidates[0].content.parts[0].text) {
+                    riddleText.textContent = result.candidates[0].content.parts[0].text;
+                    let options = [correctAnswer.name];
+                    const wrongAnswers = allItems.filter(item => item.name !== correctAnswer.name).map(item => item.name);
+                    shuffleArray(wrongAnswers);
+                    options.push(...wrongAnswers.slice(0, 3));
+                    options = shuffleArray(options);
+                    options.forEach(opt => {
+                        const btn = document.createElement('button');
+                        btn.className = 'font-semibold text-lg bg-white hover:bg-blue-100 text-gray-800 p-4 rounded-xl shadow-md transition-all duration-200';
+                        btn.textContent = opt;
+                        btn.addEventListener('click', () => checkRiddleAnswer(opt, correctAnswer.name, btn));
+                        riddleOptionsContainer.appendChild(btn);
+                    });
+                } else {
+                    throw new Error('Could not generate riddle');
+                }
+            } catch (e) {
+                riddleText.textContent = 'Oops! Could not think of a riddle. Please try again.';
+                setTimeout(loadNextRiddle, 2000);
+            }
+        }
 
-    const EMOJI = ['✨','🎉','⭐️','💫','🎈','😊'];
-    function confetti(host){
-      host.innerHTML = '';
-      for(let i=0;i<12;i++){
-        const el = document.createElement('i'); el.textContent = EMOJI[Math.floor(Math.random()*EMOJI.length)];
-        const x = Math.random()*90+5, y = Math.random()*5 + 5, rot = (Math.random()*60-30), dur = 700 + Math.random()*600;
-        el.style.left = x+'%'; el.style.top = y+'%'; el.style.opacity = '0'; host.appendChild(el);
-        el.animate([
-          { transform:'translate(-50%,-50%) rotate('+rot+'deg) scale(1)', opacity:0 },
-          { transform:'translate(-50%,0) rotate('+(rot+60)+'deg) scale(1.1)', opacity:1, offset:.3 },
-          { transform:'translate(-50%,120%) rotate('+(rot+120)+'deg) scale(1)', opacity:0 }
-        ], { duration: dur, easing:'cubic-bezier(.22,1,.36,1)' });
-      }
-    }
+        function checkRiddleAnswer(selected, correct, button) {
+            if (riddleState.isAnswered) return;
+            riddleState.isAnswered = true;
+            const allButtons = riddleOptionsContainer.querySelectorAll('button');
+            if (selected === correct) {
+                button.classList.add('correct');
+                speak('That\'s right!');
+                riddleFeedback.innerHTML = `<p class="text-2xl font-bold text-green-600">You got it! 🎉</p>`;
+            } else {
+                button.classList.add('incorrect');
+                speak('Not quite.');
+                riddleFeedback.innerHTML = `<p class="text-2xl font-bold text-red-600">Good try! The answer was ${correct}.</p>`;
+                allButtons.forEach(btn => {
+                    if (btn.textContent === correct) btn.classList.add('correct');
+                });
+            }
+            setTimeout(loadNextRiddle, 2500);
+        }
 
-    // Speech
-    let VOICES = [];
-    function loadVoices(){
-      const voices = window.speechSynthesis.getVoices();
-      VOICES = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
-      voiceSel.innerHTML = VOICES.map((v, i) => '<option value="'+i+'">'+v.name+' ('+v.lang+')</option>').join('');
-      let preferred = VOICES.findIndex(v => /Google US English|Samantha|Microsoft (Aria|Mark)/i.test(v.name));
-      voiceSel.selectedIndex = preferred >= 0 ? preferred : 0;
-    }
-    window.speechSynthesis.onvoiceschanged = loadVoices;
-    function speakWord(text){ if(muteEl.checked) return; window.speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); const v = VOICES[voiceSel.selectedIndex] || window.speechSynthesis.getVoices()[0]; if(v) u.voice = v; u.lang = (v && v.lang) ? v.lang : 'en-US'; u.pitch = parseFloat(pitchEl.value); u.rate = parseFloat(rateEl.value); u.volume = parseFloat(volEl.value); if(text.includes(' ')) u.rate = Math.max(.85, u.rate - .05); window.speechSynthesis.speak(u); }
+        // --- QUIZ & OTHER FUNCTIONS ---
+        let voices = [];
 
-    // Parallax
-    function updateParallax(){ const y = window.scrollY || 0; document.querySelectorAll('.layer').forEach(layer => { const s = parseFloat(layer.dataset.speed || '0'); layer.style.transform = 'translate3d(0, '+(-y * s)+'px, 0)'; }); }
-    window.addEventListener('scroll', updateParallax, { passive:true });
-    function makeClouds(){ const host = document.getElementById('cloud-layer'); const tpl = document.getElementById('cloud-svg'); const N = 12; for(let i=0;i<N;i++){ const c = document.createElement('div'); c.className = 'cloud'; const clone = tpl.content.cloneNode(true); c.appendChild(clone); const top = 5 + Math.random()*60; const scale = .6 + Math.random()*0.9; const dur = 40 + Math.random()*50; c.style.top = top+'vh'; c.style.animationDuration = dur+'s'; c.style.opacity = (0.7 + Math.random()*0.3).toFixed(2); c.style.transform = 'scale('+scale+')'; c.style.animationDelay = (-Math.random()*dur)+'s'; host.appendChild(c); } }
+        function populateVoiceList() {
+            if (typeof speechSynthesis === 'undefined') return;
+            voices = speechSynthesis.getVoices();
+        }
 
-    // Tabs switching
-    function showPage(which){
-      const quiz = which === 'quiz';
-      learnPage.classList.toggle('hidden', quiz);
-      quizPage.classList.toggle('hidden', !quiz);
-      document.getElementById('filters').classList.toggle('hidden', quiz);
-      tabLearn.setAttribute('aria-selected', (!quiz).toString());
-      tabQuiz.setAttribute('aria-selected', (quiz).toString());
-    }
-    tabLearn.addEventListener('click', ()=>showPage('learn'));
-    tabQuiz.addEventListener('click', ()=>showPage('quiz'));
+        if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = populateVoiceList;
+        }
 
-    // ------- Quiz helpers -------
-    async function loadImgInto(el, item){
-      el.innerHTML = '';
-      try{
-        const res = await fetchOpenverseImage(item);
-        const img = document.createElement('img');
-        img.src = res.url; img.alt = (res.meta && res.meta.title) || item.word; img.loading = 'lazy';
-        el.appendChild(img);
-      }catch{ el.innerHTML = item.svg; }
-    }
+        function speak(text) {
+            if (typeof speechSynthesis === 'undefined') {
+                console.error("Speech Synthesis not supported");
+                return;
+            }
+            const utterance = new SpeechSynthesisUtterance(text);
+            const femaleVoice = voices.find(voice => voice.name.includes('Google US English') && voice.lang === 'en-US');
+            utterance.voice = femaleVoice || voices.find(voice => voice.lang === 'en-US') || voices[0];
+            utterance.pitch = 1.2;
+            utterance.rate = 0.9;
+            speechSynthesis.cancel();
+            speechSynthesis.speak(utterance);
+        }
 
-    function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-    function buildQuiz(count=10){
-      const qs = [];
-      for(let i=0;i<count;i++){
-        const cat = pick(CATEGORY_DEFS).name;
-        const pool = ITEMS.filter(it => it.cat === cat);
-        const correct = pick(pool);
-        const used = new Set([correct.word]);
-        const distractors = [];
-        while(distractors.length < 3){ const d = pick(pool); if(!used.has(d.word)){ used.add(d.word); distractors.push(d); } }
-        const options = [...distractors, correct].sort(()=>Math.random()-0.5);
-        qs.push({ cat, correct, options });
-      }
-      return qs;
-    }
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
 
-    let QUIZ = [], qIndex = 0, score = 0;
+        function startQuiz() {
+            quizState.questions = shuffleArray([...allItems]).slice(0, 10);
+            quizState.currentQuestionIndex = 0;
+            quizState.score = 0;
+            quizState.isAnswered = false;
+            scoreEl.textContent = quizState.score;
+            quizStartScreen.classList.add('hidden');
+            quizGameScreen.classList.remove('hidden');
+            loadQuestion();
+        }
 
-    function attachOptionHandlers(btn, opt, correct){
-      const art = btn.querySelector('.art');
-      art.setAttribute('tabindex','0'); art.setAttribute('role','button');
-      art.addEventListener('click', (e)=>{ if(!e.target.closest('img,svg')) return; speakWord(opt.word); selectOption(btn, opt.word === correct.word); });
-      art.addEventListener('keydown', (e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); speakWord(opt.word); selectOption(btn, opt.word===correct.word); }});
-    }
+        function loadQuestion() {
+            quizState.isAnswered = false;
+            const currentQuestion = quizState.questions[quizState.currentQuestionIndex];
+            questionNumberEl.textContent = quizState.currentQuestionIndex + 1;
+            quizImageContainer.innerHTML = `<img src="${currentQuestion.img}" alt="Quiz item" class="w-64 h-64 object-cover rounded-2xl shadow-md" onerror="this.onerror=null;this.src='https://placehold.co/400/ccc/000?text=Image+Error';">`;
+            const correctAnswer = currentQuestion.name;
+            let options = [correctAnswer];
+            const wrongAnswers = allItems.filter(item => item.name !== correctAnswer).map(item => item.name);
+            shuffleArray(wrongAnswers);
+            options.push(...wrongAnswers.slice(0, 3));
+            options = shuffleArray(options);
+            quizOptionsContainer.innerHTML = '';
+            options.forEach(optionText => {
+                const optionButton = document.createElement('button');
+                optionButton.className = 'font-semibold text-lg bg-white hover:bg-blue-100 text-gray-800 p-4 rounded-xl shadow-md transition-all duration-200';
+                optionButton.textContent = optionText;
+                optionButton.addEventListener('click', () => checkAnswer(optionText, correctAnswer, optionButton));
+                quizOptionsContainer.appendChild(optionButton);
+            });
+            quizFeedback.innerHTML = '';
+        }
 
-    function renderQuestion(){
-      const q = QUIZ[qIndex];
-      qCounter.textContent = 'Question ' + (qIndex+1) + '/' + QUIZ.length;
-      qPrompt.textContent  = 'Find the ' + stripColorPrefix(q.correct.word) + ' (' + q.cat + ')';
-      qScore.textContent   = 'Score: ' + score;
-      loadImgInto(qImage, q.correct);
-      qOptions.innerHTML = '';
-      q.options.forEach((opt)=>{
-        const btn = document.createElement('div');
-        btn.className = 'option';
-        btn.dataset.word = opt.word;
-        btn.innerHTML = '<div class="art"></div>';
-        qOptions.appendChild(btn);
-        loadImgInto(btn.querySelector('.art'), opt);
-        attachOptionHandlers(btn, opt, q.correct);
-      });
-      qNext.disabled = true;
-    }
+        function checkAnswer(selectedAnswer, correctAnswer, button) {
+            if (quizState.isAnswered) return;
+            quizState.isAnswered = true;
+            const allButtons = quizOptionsContainer.querySelectorAll('button');
+            if (selectedAnswer === correctAnswer) {
+                quizState.score++;
+                scoreEl.textContent = quizState.score;
+                button.classList.add('correct');
+                speak('Correct!');
+                quizFeedback.innerHTML = `<p class="text-2xl font-bold text-green-600">Correct! 🎉</p>`;
+            } else {
+                button.classList.add('incorrect');
+                speak('Try again.');
+                quizFeedback.innerHTML = `<p class="text-2xl font-bold text-red-600">Not quite! The answer is ${correctAnswer}.</p>`;
+                allButtons.forEach(btn => {
+                    if (btn.textContent === correctAnswer) btn.classList.add('correct');
+                });
+            }
+            setTimeout(() => {
+                if (quizState.currentQuestionIndex < quizState.questions.length - 1) {
+                    quizState.currentQuestionIndex++;
+                    loadQuestion();
+                } else {
+                    showFinalScore();
+                }
+            }, 2000);
+        }
 
-    function selectOption(btn, isCorrect){
-      if(btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
-      if(isCorrect){ btn.classList.add('correct'); score++; qScore.textContent = 'Score: ' + score; confetti(btn); }
-      else { btn.classList.add('wrong'); }
-      qNext.disabled = false;
-    }
+        async function generateQuizFeedback(score, total) {
+            const feedbackContainer = document.getElementById('ai-feedback');
+            feedbackContainer.innerHTML = '<div class="loader inline-block"></div>';
+            try {
+                const prompt = `A child just finished a quiz and scored ${score} out of ${total}. Write a short, cheerful, and encouraging message for them. If they did well (more than half correct), praise them. If their score is low, be encouraging and suggest they try again. Keep it to 1-2 sentences.`;
+                const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+                const result = await callGeminiApi(apiUrl, payload);
+                if (result.candidates && result.candidates[0].content.parts[0].text) {
+                    feedbackContainer.textContent = result.candidates[0].content.parts[0].text;
+                } else {
+                    feedbackContainer.textContent = "You did a great job!";
+                }
+            } catch (error) {
+                console.error("Failed to generate quiz feedback:", error);
+                feedbackContainer.textContent = "You did a great job!";
+            }
+        }
 
-    function revealAnswer(){
-      const q = QUIZ[qIndex];
-      Array.from(qOptions.children).forEach((btn)=>{ if(btn.dataset.word === q.correct.word){ btn.classList.add('correct'); } });
-      qNext.disabled = false;
-    }
-    qReveal.addEventListener('click', revealAnswer);
-    function nextQuestion(){
-      if(qIndex < QUIZ.length - 1){ qIndex++; renderQuestion(); }
-      else {
-        qPrompt.textContent = 'Great job! You finished the quiz.';
-        qImage.innerHTML = '';
-        qOptions.innerHTML = '';
-        qNext.disabled = true;
-      }
-    }
-    qNext.addEventListener('click', nextQuestion);
+        function showFinalScore() {
+            quizGameScreen.classList.add('hidden');
+            quizStartScreen.classList.remove('hidden');
+            quizStartScreen.innerHTML = `
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">Quiz Complete!</h2>
+                <p class="text-center text-gray-600 mb-2 text-2xl">Your final score is <span class="font-bold text-blue-600">${quizState.score}</span> out of ${quizState.questions.length}!</p>
+                <div id="ai-feedback" class="text-center text-gray-700 font-semibold text-lg my-4 min-h-[2.5rem]"></div>
+                <div class="text-center">
+                    <button id="restart-quiz-btn" class="font-fredoka text-2xl bg-green-500 hover:bg-green-600 text-white py-4 px-10 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Play Again</button>
+                </div>`;
 
-    // Controls wiring
-    document.getElementById('contrast').addEventListener('change', e => { document.body.classList.toggle('contrast', e.target.checked); });
-    document.getElementById('test-voice').addEventListener('click', () => speakWord("Hello! Let's learn many new words!"));
-    document.getElementById('shuffle').addEventListener('click', () => { filtered.sort(()=>Math.random()-0.5); visibleCount = Math.min(filtered.length, Math.max(48, visibleCount)); drawCards(); });
-    document.getElementById('artStyle').addEventListener('change', ()=> renderGrid(true));
+            generateQuizFeedback(quizState.score, quizState.questions.length);
 
-    // Init
-    function init(){
-      ITEMS = buildDataset();
-      categories = CATEGORY_DEFS.map(c=>c.name);
-      renderFilters();
-      activeCat = 'All';
-      // default to Photos for realism
-      artStyleSel.value = 'photo';
-      renderGrid(true);
-      loadVoices();
-      makeClouds();
-      updateParallax();
-      // Build quiz
-      QUIZ = buildQuiz(10);
-      renderQuestion();
-    }
-    document.addEventListener('DOMContentLoaded', init);
-  </script>
+            document.getElementById('restart-quiz-btn').addEventListener('click', () => {
+                quizStartScreen.innerHTML = `<h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">Quiz Time!</h2><p class="text-center text-gray-600 mb-6">Let's see what you've learned. Click the button to start!</p><div class="text-center"><button id="start-quiz-btn" class="font-fredoka text-2xl bg-green-500 hover:bg-green-600 text-white py-4 px-10 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Start Quiz</button></div>`;
+                document.getElementById('start-quiz-btn').addEventListener('click', startQuiz);
+            });
+        }
+
+        function createCloud() {
+            const cloudTemplate = document.getElementById('cloud-svg');
+            const cloud = document.createElement('div');
+            cloud.className = 'cloud';
+            cloud.innerHTML = cloudTemplate.innerHTML;
+
+            const duration = Math.random() * 70 + 50;
+            const top = Math.random() * 30;
+            const scale = Math.random() * 0.6 + 0.5;
+            const delay = Math.random() * -20;
+
+            cloud.style.animationDuration = `${duration}s`;
+            cloud.style.animationDelay = `${delay}s`;
+            cloud.style.top = `${top}vh`;
+            cloud.style.transform = `scale(${scale})`;
+
+            cloudLayer.appendChild(cloud);
+
+            setTimeout(() => {
+                cloud.remove();
+            }, (duration + Math.abs(delay)) * 1000);
+        }
+
+        // --- INITIALIZATION & EVENT LISTENERS ---
+        showVocabBtn.addEventListener('click', showVocab);
+        showQuizBtn.addEventListener('click', showQuiz);
+        showStoryBtn.addEventListener('click', showStory);
+        showRiddleBtn.addEventListener('click', showRiddle);
+        showDrawingBtn.addEventListener('click', showDrawing);
+        showChatBtn.addEventListener('click', showChat);
+        showSongBtn.addEventListener('click', showSong);
+        showSentenceBtn.addEventListener('click', showSentence);
+        showSpellingBtn.addEventListener('click', showSpelling);
+        showPictureDetectiveBtn.addEventListener('click', showPictureDetective);
+        showTongueTwisterBtn.addEventListener('click', showTongueTwister);
+        startQuizBtn.addEventListener('click', startQuiz);
+        startRiddleBtn.addEventListener('click', startRiddleGame);
+        generateStoryBtn.addEventListener('click', generateStory);
+        continueStoryBtn.addEventListener('click', continueStory);
+        readStoryBtn.addEventListener('click', () => readAloud(storyOutput.innerText, readStoryBtn, audioPlayerContainer));
+        closeModalBtn.addEventListener('click', hideFunFact);
+        readFactBtn.addEventListener('click', () => readAloud(funFactContent.innerText, readFactBtn, factAudioPlayer));
+        generateTwisterBtn.addEventListener('click', generateTongueTwister);
+        readTwisterBtn.addEventListener('click', () => readAloud(twisterOutput.innerText, readTwisterBtn, twisterAudioPlayerContainer));
+
+        generateDrawingBtn.addEventListener('click', async () => {
+            const prompt = drawingPromptInput.value.trim();
+            if (!prompt) {
+                alert('Please type what you want to draw!');
+                return;
+            }
+            generateDrawingBtn.disabled = true;
+            downloadDrawingBtn.classList.add('hidden');
+            generateDrawingBtn.innerHTML = 'Drawing... <div class="loader"></div>';
+            drawingOutput.innerHTML = '<div class="flex flex-col items-center justify-center"><div class="loader" style="width:48px; height:48px; border-width: 6px;"></div><p class="mt-4 text-gray-500">Our AI artist is getting its crayons...</p></div>';
+            try {
+                const fullPrompt = `A simple, cute, and colorful cartoon drawing for a child of: ${prompt}`;
+                const pngImageUrl = await generateImage(fullPrompt);
+
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+
+                    const webpImageUrl = canvas.toDataURL('image/webp', 0.9);
+
+                    drawingOutput.innerHTML = `<img src="${pngImageUrl}" class="w-full h-full object-contain rounded-lg" alt="AI generated drawing of ${prompt}">`;
+                    downloadDrawingBtn.href = webpImageUrl;
+                    downloadDrawingBtn.classList.remove('hidden');
+                };
+                img.src = pngImageUrl;
+
+            } catch (error) {
+                console.error("Failed to generate drawing:", error);
+                drawingOutput.innerHTML = '<p class="text-red-500">Oops! The artist dropped the pencils. Please try again.</p>';
+            } finally {
+                generateDrawingBtn.disabled = false;
+                generateDrawingBtn.textContent = 'Draw!';
+            }
+        });
+
+        chatForm.addEventListener('submit', handleChatSubmit);
+        generateSongBtn.addEventListener('click', generateSong);
+        readSongBtn.addEventListener('click', () => readAloud(songOutput.innerText, readSongBtn, songAudioPlayer));
+        sentenceNewBtn.addEventListener('click', startSentenceGame);
+        sentenceClearBtn.addEventListener('click', clearSentence);
+        sentenceCheckBtn.addEventListener('click', checkSentence);
+        startSpellingBtn.addEventListener('click', startSpellingBee);
+        spellingListenBtn.addEventListener('click', () => readAloud(`Spell the word: ${spellingState.currentWord}`, spellingListenBtn, spellingAudioPlayer));
+        spellingCheckBtn.addEventListener('click', checkSpelling);
+        spellingNextBtn.addEventListener('click', loadNextSpellingWord);
+        detectiveCheckBtn.addEventListener('click', checkDescription);
+        detectiveNewBtn.addEventListener('click', startPictureDetectiveGame);
+
+        // --- Initial Page Load ---
+        createCategoryButtons();
+        displayVocabularyForCategory('Animals');
+        populateSongWords();
+        showVocab();
+
+        for (let i = 0; i < 5; i++) {
+            createCloud();
+        }
+        setInterval(createCloud, 10000);
+    });
+</script>
 </body>
 </html>
