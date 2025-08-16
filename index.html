@@ -170,10 +170,7 @@
             transition: opacity 0.3s ease-in-out;
         }
 
-        .fun-fact-button {
-            position: absolute;
-            top: 8px;
-            right: 8px;
+        .info-button {
             background-color: rgba(0, 0, 0, 0.5);
             color: white;
             border-radius: 50%;
@@ -188,10 +185,20 @@
             border: 2px solid white;
             transition: background-color 0.2s;
         }
-
-        .fun-fact-button:hover {
+        .info-button:hover {
             background-color: rgba(0, 0, 0, 0.8);
         }
+        .fun-fact-button {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+        }
+        .what-is-it-button {
+            position: absolute;
+            top: 48px;
+            right: 8px;
+        }
+
 
         /* Chat styles */
         .chat-message {
@@ -226,6 +233,11 @@
     </style>
 </head>
 <body>
+
+<!-- API Key Alert -->
+<div id="api-key-alert" class="hidden fixed top-0 left-0 right-0 bg-red-500 text-white p-4 text-center z-50">
+    <strong>Warning:</strong> API Key is missing. Please add your Google AI API Key to the `API_KEY` variable in the script tag to use the AI features.
+</div>
 
 <!-- Static background layers -->
 <div class="background-container" aria-hidden="true">
@@ -267,6 +279,9 @@
             <button id="show-spelling-btn" class="font-fredoka text-xl bg-rose-500 hover:bg-rose-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Spelling Bee</button>
             <button id="show-picture-detective-btn" class="font-fredoka text-xl bg-lime-500 hover:bg-lime-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Picture Detective</button>
             <button id="show-tongue-twister-btn" class="font-fredoka text-xl bg-teal-500 hover:bg-teal-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Tongue Twisters</button>
+            <button id="show-rhyming-btn" class="font-fredoka text-xl bg-amber-500 hover:bg-amber-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Rhyming Time</button>
+            <button id="show-story-creator-btn" class="font-fredoka text-xl bg-fuchsia-500 hover:bg-fuchsia-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Silly Story Creator</button>
+            <button id="show-whats-different-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">What's Different?</button>
         </nav>
 
         <!-- Vocabulary Section -->
@@ -346,6 +361,9 @@
                 </div>
                 <div id="drawing-output" class="bg-white p-4 rounded-lg shadow-inner min-h-[300px] flex items-center justify-center">
                     <p class="text-gray-500">Your drawing will appear here!</p>
+                </div>
+                 <div class="text-center mt-4">
+                    <button id="story-from-drawing-btn" class="hidden font-fredoka text-xl bg-fuchsia-500 hover:bg-fuchsia-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">✨ Tell a Story About This Picture</button>
                 </div>
             </div>
         </section>
@@ -462,6 +480,73 @@
             </div>
         </section>
 
+        <!-- NEW: Rhyming Section -->
+        <section id="rhyming-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ Rhyming Time ✨</h2>
+                <p class="text-center text-gray-600 mb-6">Think of a word that rhymes with the word below!</p>
+                <div id="rhyming-word-display" class="bg-white p-4 rounded-lg shadow-inner text-4xl text-center font-bold text-blue-600 mb-4 min-h-[70px] flex items-center justify-center"></div>
+                <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                    <input type="text" id="rhyming-input" class="flex-grow p-3 text-2xl border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-400 focus:border-transparent" placeholder="Type your rhyming word...">
+                    <button id="rhyming-check-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-lg">Check My Rhyme</button>
+                </div>
+                <div id="rhyming-feedback" class="text-center mt-4 text-2xl font-bold"></div>
+                <div class="text-center mt-6">
+                    <button id="rhyming-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Word</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Story Creator Section -->
+        <section id="story-creator-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <div id="story-creator-start">
+                    <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ Silly Story Creator ✨</h2>
+                    <p class="text-center text-gray-600 mb-6">Let's write a silly story together! Click the button to start.</p>
+                    <div class="text-center">
+                        <button id="story-creator-start-btn" class="font-fredoka text-2xl bg-fuchsia-500 hover:bg-fuchsia-600 text-white py-4 px-10 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Start a New Story</button>
+                    </div>
+                </div>
+                <div id="story-creator-inputs" class="hidden">
+                     <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">Give me some words!</h2>
+                     <div id="story-creator-fields" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6"></div>
+                     <div class="text-center">
+                        <button id="story-creator-generate-btn" class="font-fredoka text-2xl bg-green-500 hover:bg-green-600 text-white py-4 px-10 rounded-full shadow-lg">Create My Story!</button>
+                     </div>
+                </div>
+                 <div id="story-creator-output" class="hidden">
+                    <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">Our Story!</h2>
+                    <div id="story-creator-result" class="bg-white p-6 rounded-lg shadow-inner min-h-[200px] text-gray-700 leading-relaxed"></div>
+                     <div class="text-center mt-6 flex justify-center gap-4">
+                        <button id="story-creator-read-btn" class="font-fredoka text-xl bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-full shadow-lg">Read it to Me!</button>
+                        <button id="story-creator-new-btn" class="font-fredoka text-xl bg-fuchsia-500 hover:bg-fuchsia-600 text-white py-3 px-8 rounded-full shadow-lg">Start Over</button>
+                     </div>
+                     <div id="story-creator-audio-player" class="mt-4"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: What's Different Section -->
+        <section id="whats-different-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ What's Different? ✨</h2>
+                <p class="text-center text-gray-600 mb-6">Look at the two pictures below and find the one difference!</p>
+                <div id="whats-different-images" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 min-h-[200px]">
+                    <div class="bg-white p-2 rounded-lg shadow-inner flex items-center justify-center">Image 1</div>
+                    <div class="bg-white p-2 rounded-lg shadow-inner flex items-center justify-center">Image 2</div>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                    <input type="text" id="whats-different-input" class="flex-grow p-3 text-xl border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent" placeholder="What is the difference?">
+                    <button id="whats-different-check-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-lg">Check</button>
+                </div>
+                <div id="whats-different-feedback" class="text-center mt-4 text-xl font-semibold"></div>
+                <div class="text-center mt-6">
+                    <button id="whats-different-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Puzzle</button>
+                </div>
+            </div>
+        </section>
+
+
     </div>
 </div>
 
@@ -493,99 +578,25 @@
 </template>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // --- DATA (WITH REAL CARTOON IMAGES) ---
-        const vocabulary = {
-            Animals: [
-                {name: 'Lion', img: 'https://img.freepik.com/free-vector/cute-lion-cartoon-character_1308-113303.jpg'},
-                {name: 'Elephant', img: 'https://img.freepik.com/free-vector/cute-elephant-cartoon-character_1308-107125.jpg'},
-                {name: 'Monkey', img: 'https://img.freepik.com/free-vector/cute-monkey-hanging-tree-cartoon-vector-icon-illustration-animal-nature-icon-concept-isolated-premium-vector-flat-cartoon-style_138676-3836.jpg'},
-                {name: 'Tiger', img: 'https://img.freepik.com/free-vector/cute-tiger-sitting-cartoon-vector-icon-illustration-animal-nature-icon-concept-isolated-premium-vector-flat-cartoon-style_138676-3774.jpg'},
-                {name: 'Bear', img: 'https://img.freepik.com/free-vector/cute-bear-waving-hand-cartoon-vector-icon-illustration-animal-nature-icon-concept-isolated-premium-vector-flat-cartoon-style_138676-3791.jpg'},
-                {name: 'Zebra', img: 'https://img.freepik.com/free-vector/cute-zebra-cartoon-character_1308-107086.jpg'},
-                {name: 'Giraffe', img: 'https://img.freepik.com/free-vector/cute-giraffe-cartoon-character_1308-107119.jpg'},
-                {name: 'Penguin', img: 'https://img.freepik.com/free-vector/cute-penguin-cartoon-character_1308-107129.jpg'},
-                {name: 'Kangaroo', img: 'https://img.freepik.com/free-vector/cute-kangaroo-cartoon-character_1308-107121.jpg'},
-                {name: 'Hippo', img: 'https://img.freepik.com/free-vector/cute-hippopotamus-cartoon-character_1308-107120.jpg'},
-                {name: 'Crocodile', img: 'https://img.freepik.com/free-vector/cute-crocodile-cartoon-character_1308-107118.jpg'},
-                {name: 'Snake', img: 'https://img.freepik.com/free-vector/cute-snake-cartoon-character_1308-107131.jpg'},
-                {name: 'Fox', img: 'https://img.freepik.com/free-vector/cute-fox-cartoon-character_1308-107117.jpg'},
-                {name: 'Wolf', img: 'https://img.freepik.com/free-vector/cute-wolf-cartoon-character_1308-107132.jpg'},
-                {name: 'Deer', img: 'https://img.freepik.com/free-vector/cute-deer-cartoon-character_1308-107116.jpg'},
-            ],
-            Fruits: [
-                {name: 'Apple', img: 'https://img.freepik.com/free-vector/red-apple-cartoon-character_1308-107111.jpg'},
-                {name: 'Banana', img: 'https://img.freepik.com/free-vector/banana-cartoon-character_1308-107112.jpg'},
-                {name: 'Orange', img: 'https://img.freepik.com/free-vector/orange-cartoon-character_1308-107128.jpg'},
-                {name: 'Grapes', img: 'https://img.freepik.com/free-vector/grapes-cartoon-character_1308-107115.jpg'},
-                {name: 'Strawberry', img: 'https://img.freepik.com/free-vector/strawberry-cartoon-character_1308-107130.jpg'},
-                {name: 'Watermelon', img: 'https://img.freepik.com/free-vector/watermelon-cartoon-character_1308-107133.jpg'},
-                {name: 'Pineapple', img: 'https://img.freepik.com/free-vector/pineapple-cartoon-character_1308-107127.jpg'},
-                {name: 'Mango', img: 'https://img.freepik.com/free-vector/mango-cartoon-character_1308-107124.jpg'},
-                {name: 'Peach', img: 'https://img.freepik.com/free-vector/peach-cartoon-character_1308-107126.jpg'},
-                {name: 'Cherry', img: 'https://img.freepik.com/free-vector/cherry-cartoon-character_1308-107114.jpg'},
-                {name: 'Pear', img: 'https://img.freepik.com/free-vector/pear-cartoon-character_1308-107123.jpg'},
-                {name: 'Kiwi', img: 'https://img.freepik.com/free-vector/kiwi-cartoon-character_1308-107122.jpg'},
-                {name: 'Plum', img: 'https://img.freepik.com/free-vector/plum-cartoon-character_1308-107129.jpg'},
-                {name: 'Blueberry', img: 'https://img.freepik.com/free-vector/blueberry-cartoon-character_1308-107113.jpg'},
-                {name: 'Lemon', img: 'https://img.freepik.com/free-vector/lemon-cartoon-character_1308-107123.jpg'},
-            ],
-            Vehicles: [
-                {name: 'Car', img: 'https://img.freepik.com/free-vector/red-car-cartoon-character_1308-107110.jpg'},
-                {name: 'Bus', img: 'https://img.freepik.com/free-vector/yellow-bus-cartoon-character_1308-107134.jpg'},
-                {name: 'Airplane', img: 'https://img.freepik.com/free-vector/airplane-cartoon-character_1308-107109.jpg'},
-                {name: 'Boat', img: 'https://img.freepik.com/free-vector/boat-cartoon-character_1308-107113.jpg'},
-                {name: 'Train', img: 'https://img.freepik.com/free-vector/train-cartoon-character_1308-107132.jpg'},
-                {name: 'Motorcycle', img: 'https://img.freepik.com/free-vector/motorcycle-cartoon-character_1308-107126.jpg'},
-                {name: 'Helicopter', img: 'https://img.freepik.com/free-vector/helicopter-cartoon-character_1308-107119.jpg'},
-                {name: 'Truck', img: 'https://img.freepik.com/free-vector/truck-cartoon-character_1308-107133.jpg'},
-                {name: 'Bicycle', img: 'https://img.freepik.com/free-vector/bicycle-cartoon-character_1308-107112.jpg'},
-                {name: 'Submarine', img: 'https://img.freepik.com/free-vector/submarine-cartoon-character_1308-107131.jpg'},
-                {name: 'Rocket', img: 'https://img.freepik.com/free-vector/rocket-cartoon-character_1308-107130.jpg'},
-                {name: 'Van', img: 'https://img.freepik.com/free-vector/van-cartoon-character_1308-107134.jpg'},
-                {name: 'Tractor', img: 'https://img.freepik.com/free-vector/tractor-cartoon-character_1308-107132.jpg'},
-            ],
-            Colors: [
-                {name: 'Red', img: 'https://img.freepik.com/free-vector/red-color-splash-cartoon-character_1308-107111.jpg'},
-                {name: 'Blue', img: 'https://img.freepik.com/free-vector/blue-color-splash-cartoon-character_1308-107113.jpg'},
-                {name: 'Green', img: 'https://img.freepik.com/free-vector/green-color-splash-cartoon-character_1308-107115.jpg'},
-                {name: 'Yellow', img: 'https://img.freepik.com/free-vector/yellow-color-splash-cartoon-character_1308-107134.jpg'},
-                {name: 'Purple', img: 'https://img.freepik.com/free-vector/purple-color-splash-cartoon-character_1308-107129.jpg'},
-                {name: 'Black', img: 'https://img.freepik.com/free-vector/black-color-splash-cartoon-character_1308-107112.jpg'},
-                {name: 'White', img: 'https://img.freepik.com/free-vector/white-color-splash-cartoon-character_1308-107133.jpg'},
-                {name: 'Orange', img: 'https://img.freepik.com/free-vector/orange-color-splash-cartoon-character_1308-107128.jpg'},
-                {name: 'Pink', img: 'https://img.freepik.com/free-vector/pink-color-splash-cartoon-character_1308-107129.jpg'},
-                {name: 'Brown', img: 'https://img.freepik.com/free-vector/brown-color-splash-cartoon-character_1308-107114.jpg'},
-                {name: 'Gray', img: 'https://img.freepik.com/free-vector/gray-color-splash-cartoon-character_1308-107118.jpg'},
-            ],
-            Shapes: [
-                {name: 'Circle', img: 'https://img.freepik.com/free-vector/circle-cartoon-character_1308-107114.jpg'},
-                {name: 'Square', img: 'https://img.freepik.com/free-vector/square-cartoon-character_1308-107131.jpg'},
-                {name: 'Triangle', img: 'https://img.freepik.com/free-vector/triangle-cartoon-character_1308-107132.jpg'},
-                {name: 'Star', img: 'https://img.freepik.com/free-vector/star-cartoon-character_1308-107130.jpg'},
-                {name: 'Heart', img: 'https://img.freepik.com/free-vector/heart-cartoon-character_1308-107119.jpg'},
-                {name: 'Rectangle', img: 'https://img.freepik.com/free-vector/rectangle-cartoon-character_1308-107130.jpg'},
-                {name: 'Oval', img: 'https://img.freepik.com/free-vector/oval-cartoon-character_1308-107128.jpg'},
-                {name: 'Diamond', img: 'https://img.freepik.com/free-vector/diamond-cartoon-character_1308-107115.jpg'},
-                {name: 'Pentagon', img: 'https://img.freepik.com/free-vector/pentagon-cartoon-character_1308-107129.jpg'},
-                {name: 'Hexagon', img: 'https://img.freepik.com/free-vector/hexagon-cartoon-character_1308-107120.jpg'},
-            ],
-            'Classroom Objects': [
-                {name: 'Book', img: 'https://img.freepik.com/free-vector/book-cartoon-character_1308-107113.jpg'},
-                {name: 'Pencil', img: 'https://img.freepik.com/free-vector/pencil-cartoon-character_1308-107129.jpg'},
-                {name: 'Chair', img: 'https://img.freepik.com/free-vector/chair-cartoon-character_1308-107114.jpg'},
-                {name: 'Table', img: 'https://img.freepik.com/free-vector/table-cartoon-character_1308-107131.jpg'},
-                {name: 'Backpack', img: 'https://img.freepik.com/free-vector/backpack-cartoon-character_1308-107112.jpg'},
-                {name: 'Scissors', img: 'https://img.freepik.com/free-vector/scissors-cartoon-character_1308-107130.jpg'},
-                {name: 'Glue', img: 'https://img.freepik.com/free-vector/glue-cartoon-character_1308-107118.jpg'},
-                {name: 'Crayon', img: 'https://img.freepik.com/free-vector/crayon-cartoon-character_1308-107115.jpg'},
-                {name: 'Ruler', img: 'https://img.freepik.com/free-vector/ruler-cartoon-character_1308-107130.jpg'},
-                {name: 'Blackboard', img: 'https://img.freepik.com/free-vector/blackboard-cartoon-character_1308-107112.jpg'},
-                {name: 'Globe', img: 'https://img.freepik.com/free-vector/globe-cartoon-character_1308-107118.jpg'},
-            ]
-        };
-        const allItems = [].concat(...Object.values(vocabulary));
+        // --- DATA (WITH CORRECTED CARTOON IMAGES) ---
+        let vocabulary = {};
+        let allItems = [];
+
+        async function loadVocabulary() {
+            try {
+                const response = await fetch('vocabulary.json');
+                vocabulary = await response.json();
+                allItems = [].concat(...Object.values(vocabulary));
+                // Once data is loaded, initialize the app
+                initializeApp();
+            } catch (error) {
+                console.error("Failed to load vocabulary:", error);
+                document.body.innerHTML = '<div class="text-white text-center p-8">Failed to load vocabulary data. Please refresh the page.</div>';
+            }
+        }
 
         // --- ELEMENTS ---
+        const apiKeyAlert = document.getElementById('api-key-alert');
         const vocabSection = document.getElementById('vocabulary-section');
         const categoryButtonsContainer = document.getElementById('category-buttons');
         const vocabGridContainer = document.getElementById('vocabulary-grid-container');
@@ -599,6 +610,9 @@
         const spellingSection = document.getElementById('spelling-section');
         const pictureDetectiveSection = document.getElementById('picture-detective-section');
         const tongueTwisterSection = document.getElementById('tongue-twister-section');
+        const rhymingSection = document.getElementById('rhyming-section');
+        const storyCreatorSection = document.getElementById('story-creator-section');
+        const whatsDifferentSection = document.getElementById('whats-different-section');
         const showVocabBtn = document.getElementById('show-vocab-btn');
         const showQuizBtn = document.getElementById('show-quiz-btn');
         const showStoryBtn = document.getElementById('show-story-btn');
@@ -610,6 +624,9 @@
         const showSpellingBtn = document.getElementById('show-spelling-btn');
         const showPictureDetectiveBtn = document.getElementById('show-picture-detective-btn');
         const showTongueTwisterBtn = document.getElementById('show-tongue-twister-btn');
+        const showRhymingBtn = document.getElementById('show-rhyming-btn');
+        const showStoryCreatorBtn = document.getElementById('show-story-creator-btn');
+        const showWhatsDifferentBtn = document.getElementById('show-whats-different-btn');
         const startQuizBtn = document.getElementById('start-quiz-btn');
         const quizStartScreen = document.getElementById('quiz-start-screen');
         const quizGameScreen = document.getElementById('quiz-game-screen');
@@ -641,6 +658,7 @@
         const drawingPromptInput = document.getElementById('drawing-prompt');
         const drawingOutput = document.getElementById('drawing-output');
         const downloadDrawingBtn = document.getElementById('download-drawing-btn');
+        const storyFromDrawingBtn = document.getElementById('story-from-drawing-btn');
         const chatForm = document.getElementById('chat-form');
         const chatInput = document.getElementById('chat-input');
         const chatLog = document.getElementById('chat-log');
@@ -677,6 +695,27 @@
         const twisterAudioControls = document.getElementById('twister-audio-controls');
         const readTwisterBtn = document.getElementById('read-twister-btn');
         const twisterAudioPlayerContainer = document.getElementById('twister-audio-player-container');
+        const rhymingWordDisplay = document.getElementById('rhyming-word-display');
+        const rhymingInput = document.getElementById('rhyming-input');
+        const rhymingCheckBtn = document.getElementById('rhyming-check-btn');
+        const rhymingFeedback = document.getElementById('rhyming-feedback');
+        const rhymingNewBtn = document.getElementById('rhyming-new-btn');
+        const storyCreatorStart = document.getElementById('story-creator-start');
+        const storyCreatorStartBtn = document.getElementById('story-creator-start-btn');
+        const storyCreatorInputs = document.getElementById('story-creator-inputs');
+        const storyCreatorFields = document.getElementById('story-creator-fields');
+        const storyCreatorGenerateBtn = document.getElementById('story-creator-generate-btn');
+        const storyCreatorOutput = document.getElementById('story-creator-output');
+        const storyCreatorResult = document.getElementById('story-creator-result');
+        const storyCreatorReadBtn = document.getElementById('story-creator-read-btn');
+        const storyCreatorNewBtn = document.getElementById('story-creator-new-btn');
+        const storyCreatorAudioPlayer = document.getElementById('story-creator-audio-player');
+        const whatsDifferentImages = document.getElementById('whats-different-images');
+        const whatsDifferentInput = document.getElementById('whats-different-input');
+        const whatsDifferentCheckBtn = document.getElementById('whats-different-check-btn');
+        const whatsDifferentFeedback = document.getElementById('whats-different-feedback');
+        const whatsDifferentNewBtn = document.getElementById('whats-different-new-btn');
+
 
         let quizState = {questions: [], currentQuestionIndex: 0, score: 0, isAnswered: false};
         let storyState = { currentStory: '' };
@@ -684,10 +723,16 @@
         let sentenceState = {correctSentence: '', userSentence: []};
         let spellingState = {currentWord: '', score: 0};
         let detectiveState = {originalPrompt: ''};
+        let drawingState = {lastImageBase64: ''};
+        let rhymingState = {currentWord: ''};
+        let storyCreatorState = {wordTypes: [], userWords: {}};
+        let whatsDifferentState = { image1: '', image2: ''};
         let chatHistory = [];
 
         let sentenceGameStarted = false;
         let detectiveGameStarted = false;
+        let whatsDifferentGameStarted = false;
+        const audioCache = new Map();
 
         // --- NAVIGATION ---
         function hideAllSections() {
@@ -758,11 +803,32 @@
             tongueTwisterSection.classList.remove('hidden');
         }
 
+        function showRhymingTime() {
+            hideAllSections();
+            rhymingSection.classList.remove('hidden');
+        }
+
+        function showStoryCreator() {
+            hideAllSections();
+            storyCreatorSection.classList.remove('hidden');
+        }
+
+        function showWhatsDifferent() {
+            hideAllSections();
+            whatsDifferentSection.classList.remove('hidden');
+        }
+
 
         // --- GEMINI API & HELPERS ---
-        const API_KEY = "AIzaSyCx-9BeHzPAJWanCkDmrD14ZBtrc8A28TY";
+        const API_KEY = "AIzaSyCx-9BeHzPAJWanCkDmrD14ZBtrc8A28TY"; // <-- PASTE YOUR API KEY HERE
 
         async function callGeminiApi(apiUrl, payload, retries = 3, delay = 1000) {
+            if (!API_KEY) {
+                apiKeyAlert.classList.remove('hidden');
+                throw new Error("API Key is missing.");
+            }
+            apiKeyAlert.classList.add('hidden');
+
             for (let i = 0; i < retries; i++) {
                 try {
                     const response = await fetch(apiUrl, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)});
@@ -833,12 +899,13 @@
             return new Blob([view], {type: 'audio/wav'});
         }
 
-        async function readAloud(text, button, playerContainer) {
-            if (button.disabled) return;
-            const originalContent = button.innerHTML;
-            button.disabled = true;
-            button.innerHTML = '<div class="loader" style="width:16px;height:16px;border-width:2px;display:inline-block;margin:0;"></div>';
-            playerContainer.innerHTML = '';
+        // --- TTS & AUDIO (REFACTORED FOR SPEED) ---
+        let isSpeaking = false;
+
+        async function generateAudioUrl(text) {
+            if (audioCache.has(text)) {
+                return audioCache.get(text);
+            }
             try {
                 const payload = {contents: [{parts: [{text: `Say in a friendly, cheerful voice for a child: ${text}`}]}], generationConfig: {responseModalities: ["AUDIO"], speechConfig: {voiceConfig: {prebuiltVoiceConfig: {voiceName: "Puck"}}}}, model: "gemini-2.5-flash-preview-tts"};
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${API_KEY}`;
@@ -849,31 +916,67 @@
 
                 if (audioData && mimeType && mimeType.startsWith("audio/")) {
                     const rateMatch = mimeType.match(/rate=(\d+)/);
-                    if (!rateMatch) {
-                        throw new Error("Sample rate not found in MIME type.");
-                    }
+                    if (!rateMatch) { throw new Error("Sample rate not found in MIME type."); }
                     const sampleRate = parseInt(rateMatch[1], 10);
                     const pcmData = base64ToArrayBuffer(audioData);
                     const pcm16 = new Int16Array(pcmData);
                     const wavBlob = pcmToWav(pcm16, 1, sampleRate);
                     const audioUrl = URL.createObjectURL(wavBlob);
-                    const audio = new Audio(audioUrl);
-                    playerContainer.appendChild(audio);
-                    audio.play();
-                    audio.onended = () => {
-                        button.disabled = false;
-                        button.innerHTML = originalContent;
-                    };
-                    return;
+                    audioCache.set(text, audioUrl);
+                    return audioUrl;
                 } else {
                     throw new Error("Invalid audio data in response.");
                 }
             } catch (error) {
-                console.error("Failed to generate TTS:", error);
-                playerContainer.innerHTML = '<p class="text-red-500 text-sm">Could not generate audio.</p>';
+                console.error(`Failed to generate TTS for "${text}":`, error);
+                return null;
             }
-            button.disabled = false;
-            button.innerHTML = originalContent;
+        }
+
+        async function speak(text) {
+            if (isSpeaking) return;
+            isSpeaking = true;
+
+            const audioUrl = await generateAudioUrl(text);
+            if (audioUrl) {
+                const audio = new Audio(audioUrl);
+                audio.play();
+                audio.onended = () => { isSpeaking = false; };
+                audio.onerror = () => { isSpeaking = false; };
+            } else {
+                isSpeaking = false;
+            }
+        }
+
+        async function readAloud(text, button, playerContainer) {
+            if (button && button.disabled) return;
+            let originalContent;
+            if(button){
+                originalContent = button.innerHTML;
+                button.disabled = true;
+                button.innerHTML = '<div class="loader" style="width:16px;height:16px;border-width:2px;display:inline-block;margin:0;"></div>';
+            }
+            if (playerContainer) playerContainer.innerHTML = '';
+
+            const audioUrl = await generateAudioUrl(text);
+
+            if (audioUrl) {
+                const audio = new Audio(audioUrl);
+                if (playerContainer) playerContainer.appendChild(audio);
+                audio.play();
+                audio.onended = () => {
+                    if(button){
+                        button.disabled = false;
+                        button.innerHTML = originalContent;
+                    }
+                };
+            } else {
+                if (playerContainer) playerContainer.innerHTML = '<p class="text-red-500 text-sm">Could not generate audio.</p>';
+                if(button){
+                    button.disabled = false;
+                    button.innerHTML = originalContent;
+                }
+            }
         }
 
         // --- AI FEATURES ---
@@ -934,11 +1037,19 @@
         }
 
         async function generateImage(prompt) {
-            const payload = {instances: [{prompt: prompt}], parameters: {"sampleCount": 1}};
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${API_KEY}`;
+            const payload = {
+                contents: [{
+                    parts: [{ text: prompt }]
+                }],
+                generationConfig: {
+                    responseModalities: ['TEXT', 'IMAGE']
+                },
+            };
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${API_KEY}`;
             const result = await callGeminiApi(apiUrl, payload);
-            if (result.predictions && result.predictions[0].bytesBase64Encoded) {
-                return `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+            const base64Data = result?.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+            if (base64Data) {
+                return `data:image/png;base64,${base64Data}`;
             } else {
                 throw new Error("No image data in response.");
             }
@@ -1228,7 +1339,7 @@
             items.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'card bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden cursor-pointer';
-                card.innerHTML = `<img src="${item.img}" alt="${item.name}" class="w-full h-40 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400/ccc/000?text=Image+Error';"><div class="p-3 text-center"><h3 class="font-bold text-lg text-gray-800">${item.name}</h3></div><button class="fun-fact-button" data-item-name="${item.name}">?</button>`;
+                card.innerHTML = `<img src="${item.img}" alt="${item.name}" class="w-full h-40 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400/ccc/000?text=Image+Error';"><div class="p-3 text-center"><h3 class="font-bold text-lg text-gray-800">${item.name}</h3></div><button class="info-button fun-fact-button" data-item-name="${item.name}">?</button><button class="info-button what-is-it-button" data-item-name="${item.name}">🤔</button>`;
                 card.querySelector('img').addEventListener('click', () => speak(item.name));
                 grid.appendChild(card);
             });
@@ -1252,9 +1363,9 @@
             });
         }
 
-        // --- FUN FACT MODAL ---
-        async function showFunFact(itemName) {
-            funFactTitle.textContent = `Fun Fact about ${itemName}!`;
+        // --- FUN FACT & EXPLANATION MODAL ---
+        async function showInfoModal(title, contentPromise) {
+            funFactTitle.textContent = title;
             funFactContent.innerHTML = '<div class="flex justify-center items-center"><div class="loader"></div></div>';
             factAudioPlayer.innerHTML = '';
             funFactModal.classList.remove('hidden');
@@ -1263,18 +1374,33 @@
                 funFactModal.querySelector('div').classList.remove('scale-95');
             }, 10);
             try {
-                const prompt = `Tell me one fun, simple fact for a 5-year-old child about a ${itemName}. Keep it to one or two short sentences.`;
-                const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
-                const result = await callGeminiApi(apiUrl, payload);
-                if (result.candidates && result.candidates[0].content.parts[0].text) {
-                    funFactContent.textContent = result.candidates[0].content.parts[0].text;
-                } else {
-                    funFactContent.textContent = 'Could not find a fun fact. Try another!';
-                }
+                const content = await contentPromise;
+                funFactContent.textContent = content;
             } catch (e) {
                 funFactContent.textContent = 'Something went wrong!';
             }
+        }
+
+        async function getFunFact(itemName) {
+            const prompt = `Tell me one fun, simple fact for a 5-year-old child about a ${itemName}. Keep it to one or two short sentences.`;
+            const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+            const result = await callGeminiApi(apiUrl, payload);
+            if (result.candidates && result.candidates[0].content.parts[0].text) {
+                return result.candidates[0].content.parts[0].text;
+            }
+            return 'Could not find a fun fact. Try another!';
+        }
+
+        async function getExplanation(itemName) {
+            const prompt = `Explain what a "${itemName}" is to a 5-year-old child in one simple sentence.`;
+            const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+            const result = await callGeminiApi(apiUrl, payload);
+            if (result.candidates && result.candidates[0].content.parts[0].text) {
+                return result.candidates[0].content.parts[0].text;
+            }
+            return `A ${itemName} is a type of thing!`;
         }
 
         function hideFunFact() {
@@ -1287,7 +1413,12 @@
 
         vocabGridContainer.addEventListener('click', (e) => {
             if (e.target.classList.contains('fun-fact-button')) {
-                showFunFact(e.target.dataset.itemName);
+                const itemName = e.target.dataset.itemName;
+                showInfoModal(`Fun Fact about ${itemName}!`, getFunFact(itemName));
+            }
+            if (e.target.classList.contains('what-is-it-button')) {
+                const itemName = e.target.dataset.itemName;
+                showInfoModal(`What is a ${itemName}?`, getExplanation(itemName));
             }
         });
 
@@ -1352,31 +1483,6 @@
         }
 
         // --- QUIZ & OTHER FUNCTIONS ---
-        let voices = [];
-
-        function populateVoiceList() {
-            if (typeof speechSynthesis === 'undefined') return;
-            voices = speechSynthesis.getVoices();
-        }
-
-        if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
-            speechSynthesis.onvoiceschanged = populateVoiceList;
-        }
-
-        function speak(text) {
-            if (typeof speechSynthesis === 'undefined') {
-                console.error("Speech Synthesis not supported");
-                return;
-            }
-            const utterance = new SpeechSynthesisUtterance(text);
-            const femaleVoice = voices.find(voice => voice.name.includes('Google US English') && voice.lang === 'en-US');
-            utterance.voice = femaleVoice || voices.find(voice => voice.lang === 'en-US') || voices[0];
-            utterance.pitch = 1.2;
-            utterance.rate = 0.9;
-            speechSynthesis.cancel();
-            speechSynthesis.speak(utterance);
-        }
-
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -1433,7 +1539,7 @@
                 speak('Try again.');
                 quizFeedback.innerHTML = `<p class="text-2xl font-bold text-red-600">Not quite! The answer is ${correctAnswer}.</p>`;
                 allButtons.forEach(btn => {
-                    if (btn.textContent === correctAnswer) btn.classList.add('correct');
+                    if (btn.textContent === correct) btn.classList.add('correct');
                 });
             }
             setTimeout(() => {
@@ -1507,90 +1613,305 @@
             }, (duration + Math.abs(delay)) * 1000);
         }
 
-        // --- INITIALIZATION & EVENT LISTENERS ---
-        showVocabBtn.addEventListener('click', showVocab);
-        showQuizBtn.addEventListener('click', showQuiz);
-        showStoryBtn.addEventListener('click', showStory);
-        showRiddleBtn.addEventListener('click', showRiddle);
-        showDrawingBtn.addEventListener('click', showDrawing);
-        showChatBtn.addEventListener('click', showChat);
-        showSongBtn.addEventListener('click', showSong);
-        showSentenceBtn.addEventListener('click', showSentence);
-        showSpellingBtn.addEventListener('click', showSpelling);
-        showPictureDetectiveBtn.addEventListener('click', showPictureDetective);
-        showTongueTwisterBtn.addEventListener('click', showTongueTwister);
-        startQuizBtn.addEventListener('click', startQuiz);
-        startRiddleBtn.addEventListener('click', startRiddleGame);
-        generateStoryBtn.addEventListener('click', generateStory);
-        continueStoryBtn.addEventListener('click', continueStory);
-        readStoryBtn.addEventListener('click', () => readAloud(storyOutput.innerText, readStoryBtn, audioPlayerContainer));
-        closeModalBtn.addEventListener('click', hideFunFact);
-        readFactBtn.addEventListener('click', () => readAloud(funFactContent.innerText, readFactBtn, factAudioPlayer));
-        generateTwisterBtn.addEventListener('click', generateTongueTwister);
-        readTwisterBtn.addEventListener('click', () => readAloud(twisterOutput.innerText, readTwisterBtn, twisterAudioPlayerContainer));
+        async function startStoryCreator() {
+            storyCreatorStart.classList.add('hidden');
+            storyCreatorOutput.classList.add('hidden');
+            storyCreatorInputs.classList.remove('hidden');
+            storyCreatorFields.innerHTML = '<div class="loader"></div>';
 
-        generateDrawingBtn.addEventListener('click', async () => {
-            const prompt = drawingPromptInput.value.trim();
-            if (!prompt) {
-                alert('Please type what you want to draw!');
+            try {
+                const prompt = "Give me a list of 5 funny and simple word types for a Mad Libs-style story for a child. Examples: 'A silly sound', 'An animal', 'A color'. Return only a JSON array of strings.";
+                const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+                const result = await callGeminiApi(apiUrl, payload);
+
+                if (result.candidates && result.candidates[0].content.parts[0].text) {
+                    storyCreatorState.wordTypes = JSON.parse(result.candidates[0].content.parts[0].text);
+                    storyCreatorFields.innerHTML = '';
+                    storyCreatorState.wordTypes.forEach(type => {
+                        const div = document.createElement('div');
+                        div.className = 'flex flex-col';
+                        div.innerHTML = `
+                            <label class="mb-1 font-semibold text-gray-700">${type}</label>
+                            <input type="text" data-type="${type}" class="p-2 border-2 border-gray-300 rounded-lg">
+                        `;
+                        storyCreatorFields.appendChild(div);
+                    });
+                } else {
+                    throw new Error("Could not get word types.");
+                }
+            } catch (error) {
+                console.error("Failed to start story creator:", error);
+                storyCreatorFields.innerHTML = '<p class="text-red-500">Could not start the story creator. Please try again!</p>';
+            }
+        }
+
+        async function generateSillyStory() {
+            storyCreatorGenerateBtn.disabled = true;
+            storyCreatorGenerateBtn.innerHTML = 'Writing... <div class="loader"></div>';
+
+            let allFilled = true;
+            storyCreatorState.userWords = {};
+            storyCreatorFields.querySelectorAll('input').forEach(input => {
+                if (!input.value.trim()) {
+                    allFilled = false;
+                }
+                storyCreatorState.userWords[input.dataset.type] = input.value.trim();
+            });
+
+            if (!allFilled) {
+                alert("Please fill in all the words!");
+                storyCreatorGenerateBtn.disabled = false;
+                storyCreatorGenerateBtn.textContent = 'Create My Story!';
                 return;
             }
-            generateDrawingBtn.disabled = true;
-            downloadDrawingBtn.classList.add('hidden');
-            generateDrawingBtn.innerHTML = 'Drawing... <div class="loader"></div>';
-            drawingOutput.innerHTML = '<div class="flex flex-col items-center justify-center"><div class="loader" style="width:48px; height:48px; border-width: 6px;"></div><p class="mt-4 text-gray-500">Our AI artist is getting its crayons...</p></div>';
+
             try {
-                const fullPrompt = `A simple, cute, and colorful cartoon drawing for a child of: ${prompt}`;
-                const pngImageUrl = await generateImage(fullPrompt);
+                const wordsList = Object.entries(storyCreatorState.userWords).map(([type, word]) => `For the word type "${type}", use the word "${word}".`).join('\n');
+                const prompt = `Write a short, silly, and funny story for a 5-year-old child. Use the following words that I provide:\n\n${wordsList}\n\nMake sure to include all the words in the story.`;
 
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0);
+                const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+                const result = await callGeminiApi(apiUrl, payload);
 
-                    const webpImageUrl = canvas.toDataURL('image/webp', 0.9);
-
-                    drawingOutput.innerHTML = `<img src="${pngImageUrl}" class="w-full h-full object-contain rounded-lg" alt="AI generated drawing of ${prompt}">`;
-                    downloadDrawingBtn.href = webpImageUrl;
-                    downloadDrawingBtn.classList.remove('hidden');
-                };
-                img.src = pngImageUrl;
-
+                if (result.candidates && result.candidates[0].content.parts[0].text) {
+                    const storyText = result.candidates[0].content.parts[0].text;
+                    storyCreatorResult.innerHTML = storyText.replace(/\n/g, '<br>');
+                    storyCreatorInputs.classList.add('hidden');
+                    storyCreatorOutput.classList.remove('hidden');
+                } else {
+                    throw new Error("Could not generate story.");
+                }
             } catch (error) {
-                console.error("Failed to generate drawing:", error);
-                drawingOutput.innerHTML = '<p class="text-red-500">Oops! The artist dropped the pencils. Please try again.</p>';
+                console.error("Failed to generate silly story:", error);
+                storyCreatorResult.innerHTML = '<p class="text-red-500">The storyteller got writer\'s block! Please try again.</p>';
             } finally {
-                generateDrawingBtn.disabled = false;
-                generateDrawingBtn.textContent = 'Draw!';
+                storyCreatorGenerateBtn.disabled = false;
+                storyCreatorGenerateBtn.textContent = 'Create My Story!';
             }
-        });
-
-        chatForm.addEventListener('submit', handleChatSubmit);
-        generateSongBtn.addEventListener('click', generateSong);
-        readSongBtn.addEventListener('click', () => readAloud(songOutput.innerText, readSongBtn, songAudioPlayer));
-        sentenceNewBtn.addEventListener('click', startSentenceGame);
-        sentenceClearBtn.addEventListener('click', clearSentence);
-        sentenceCheckBtn.addEventListener('click', checkSentence);
-        startSpellingBtn.addEventListener('click', startSpellingBee);
-        spellingListenBtn.addEventListener('click', () => readAloud(`Spell the word: ${spellingState.currentWord}`, spellingListenBtn, spellingAudioPlayer));
-        spellingCheckBtn.addEventListener('click', checkSpelling);
-        spellingNextBtn.addEventListener('click', loadNextSpellingWord);
-        detectiveCheckBtn.addEventListener('click', checkDescription);
-        detectiveNewBtn.addEventListener('click', startPictureDetectiveGame);
-
-        // --- Initial Page Load ---
-        createCategoryButtons();
-        displayVocabularyForCategory('Animals');
-        populateSongWords();
-        showVocab();
-
-        for (let i = 0; i < 5; i++) {
-            createCloud();
         }
-        setInterval(createCloud, 10000);
+
+        function resetStoryCreator() {
+            storyCreatorOutput.classList.add('hidden');
+            storyCreatorInputs.classList.add('hidden');
+            storyCreatorStart.classList.remove('hidden');
+            storyCreatorFields.innerHTML = '';
+            storyCreatorResult.innerHTML = '';
+        }
+
+        async function startWhatsDifferentGame() {
+            whatsDifferentNewBtn.disabled = true;
+            whatsDifferentCheckBtn.disabled = true;
+            whatsDifferentInput.value = '';
+            whatsDifferentFeedback.innerHTML = '';
+            whatsDifferentImages.innerHTML = '<div class="loader"></div><p class="ml-4 text-gray-500">Creating a puzzle...</p>';
+
+            try {
+                const prompt = `Describe a simple cartoon scene for a child in one sentence. Then, describe a very subtle, single difference for that scene. Return the response as a JSON object with two keys: "original" and "modified". For example: {"original": "A yellow cat wearing a blue hat.", "modified": "A yellow cat wearing a red hat."}`;
+                const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+                const result = await callGeminiApi(apiUrl, payload);
+
+                if (result.candidates && result.candidates[0].content.parts[0].text) {
+                    const descriptions = JSON.parse(result.candidates[0].content.parts[0].text.replace(/```json\n|```/g, '').trim());
+                    const [image1Url, image2Url] = await Promise.all([
+                        generateImage(`A simple, cute, and colorful cartoon drawing for a child of: ${descriptions.original}`),
+                        generateImage(`A simple, cute, and colorful cartoon drawing for a child of: ${descriptions.modified}`)
+                    ]);
+
+                    whatsDifferentState.image1 = image1Url.split(',')[1];
+                    whatsDifferentState.image2 = image2Url.split(',')[1];
+
+                    whatsDifferentImages.innerHTML = `
+                        <div class="bg-white p-2 rounded-lg shadow-inner flex items-center justify-center"><img src="${image1Url}" class="w-full h-full object-contain rounded-lg"></div>
+                        <div class="bg-white p-2 rounded-lg shadow-inner flex items-center justify-center"><img src="${image2Url}" class="w-full h-full object-contain rounded-lg"></div>
+                    `;
+                } else {
+                    throw new Error("Could not get image descriptions.");
+                }
+            } catch (error) {
+                console.error("Failed to start What's Different game:", error);
+                whatsDifferentImages.innerHTML = '<p class="text-red-500">Could not create a puzzle. Please try again!</p>';
+            } finally {
+                whatsDifferentNewBtn.disabled = false;
+                whatsDifferentCheckBtn.disabled = false;
+            }
+        }
+
+        async function checkWhatsDifferentAnswer() {
+            const userAnswer = whatsDifferentInput.value.trim();
+            if (!userAnswer) {
+                alert("Please describe the difference first!");
+                return;
+            }
+
+            whatsDifferentCheckBtn.disabled = true;
+            whatsDifferentFeedback.innerHTML = '<div class="loader inline-block"></div> Thinking...';
+
+            try {
+                const prompt = `Here are two images. A child has described the difference between them as: "${userAnswer}". Is the child correct? Respond with a short, encouraging message for the child. If they are correct, praise them. If they are incorrect, gently guide them toward the actual difference.`;
+                const payload = {
+                    contents: [{
+                        parts: [
+                            { text: prompt },
+                            { inline_data: { mime_type: "image/png", data: whatsDifferentState.image1 } },
+                            { inline_data: { mime_type: "image/png", data: whatsDifferentState.image2 } }
+                        ]
+                    }]
+                };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=${API_KEY}`;
+                const result = await callGeminiApi(apiUrl, payload);
+
+                if (result.candidates && result.candidates[0].content.parts[0].text) {
+                    whatsDifferentFeedback.textContent = result.candidates[0].content.parts[0].text;
+                } else {
+                    throw new Error("Could not get feedback.");
+                }
+            } catch (error) {
+                console.error("Failed to check What's Different answer:", error);
+                whatsDifferentFeedback.textContent = 'I am not sure! Try again.';
+            } finally {
+                whatsDifferentCheckBtn.disabled = false;
+            }
+        }
+
+        // --- INITIALIZATION & EVENT LISTENERS ---
+        function initializeApp() {
+            showVocabBtn.addEventListener('click', showVocab);
+            showQuizBtn.addEventListener('click', showQuiz);
+            showStoryBtn.addEventListener('click', showStory);
+            showRiddleBtn.addEventListener('click', showRiddle);
+            showDrawingBtn.addEventListener('click', showDrawing);
+            showChatBtn.addEventListener('click', showChat);
+            showSongBtn.addEventListener('click', showSong);
+            showSentenceBtn.addEventListener('click', showSentence);
+            showSpellingBtn.addEventListener('click', showSpelling);
+            showPictureDetectiveBtn.addEventListener('click', showPictureDetective);
+            showTongueTwisterBtn.addEventListener('click', showTongueTwister);
+            showRhymingBtn.addEventListener('click', showRhymingTime);
+            showStoryCreatorBtn.addEventListener('click', showStoryCreator);
+            showWhatsDifferentBtn.addEventListener('click', showWhatsDifferent);
+            startQuizBtn.addEventListener('click', startQuiz);
+            startRiddleBtn.addEventListener('click', startRiddleGame);
+            generateStoryBtn.addEventListener('click', generateStory);
+            continueStoryBtn.addEventListener('click', continueStory);
+            readStoryBtn.addEventListener('click', () => readAloud(storyOutput.innerText, readStoryBtn, audioPlayerContainer));
+            closeModalBtn.addEventListener('click', hideFunFact);
+            readFactBtn.addEventListener('click', () => readAloud(funFactContent.innerText, readFactBtn, factAudioPlayer));
+            generateTwisterBtn.addEventListener('click', generateTongueTwister);
+            readTwisterBtn.addEventListener('click', () => readAloud(twisterOutput.innerText, readTwisterBtn, twisterAudioPlayerContainer));
+
+            generateDrawingBtn.addEventListener('click', async () => {
+                const prompt = drawingPromptInput.value.trim();
+                if (!prompt) {
+                    alert('Please type what you want to draw!');
+                    return;
+                }
+                generateDrawingBtn.disabled = true;
+                downloadDrawingBtn.classList.add('hidden');
+                storyFromDrawingBtn.classList.add('hidden');
+                generateDrawingBtn.innerHTML = 'Drawing... <div class="loader"></div>';
+                drawingOutput.innerHTML = '<div class="flex flex-col items-center justify-center"><div class="loader" style="width:48px; height:48px; border-width: 6px;"></div><p class="mt-4 text-gray-500">Our AI artist is getting its crayons...</p></div>';
+                try {
+                    const fullPrompt = `A simple, cute, and colorful cartoon drawing for a child of: ${prompt}`;
+                    const pngImageUrl = await generateImage(fullPrompt);
+
+                    drawingState.lastImageBase64 = pngImageUrl.split(',')[1];
+
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0);
+
+                        const webpImageUrl = canvas.toDataURL('image/webp', 0.9);
+
+                        drawingOutput.innerHTML = `<img src="${pngImageUrl}" class="w-full h-full object-contain rounded-lg" alt="AI generated drawing of ${prompt}">`;
+                        downloadDrawingBtn.href = webpImageUrl;
+                        downloadDrawingBtn.classList.remove('hidden');
+                        storyFromDrawingBtn.classList.remove('hidden');
+                    };
+                    img.src = pngImageUrl;
+
+                } catch (error) {
+                    console.error("Failed to generate drawing:", error);
+                    drawingOutput.innerHTML = '<p class="text-red-500">Oops! The artist dropped the pencils. Please try again.</p>';
+                } finally {
+                    generateDrawingBtn.disabled = false;
+                    generateDrawingBtn.textContent = 'Draw!';
+                }
+            });
+
+            storyFromDrawingBtn.addEventListener('click', async () => {
+                storyFromDrawingBtn.disabled = true;
+                storyFromDrawingBtn.innerHTML = 'Writing... <div class="loader"></div>';
+                try {
+                    const prompt = "Write a short, simple, and fun story for a 5-year-old child based on this picture.";
+                    const payload = {
+                        contents: [{
+                            parts: [
+                                { text: prompt },
+                                { inline_data: { mime_type: "image/png", data: drawingState.lastImageBase64 } }
+                            ]
+                        }]
+                    };
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=${API_KEY}`;
+                    const result = await callGeminiApi(apiUrl, payload);
+                    if (result.candidates && result.candidates[0].content.parts[0].text) {
+                        const storyText = result.candidates[0].content.parts[0].text;
+                        storyState.currentStory = storyText;
+                        storyOutput.innerHTML = storyText.replace(/\n/g, '<br>');
+                        showStory();
+                        continueStoryBtn.classList.remove('hidden');
+                        storyAudioControls.classList.remove('hidden');
+                    } else {
+                        alert("The storyteller couldn't think of a story for this picture! Try another one.");
+                    }
+                } catch(error) {
+                    console.error("Failed to generate story from drawing:", error);
+                    alert("Oops! Something went wrong while writing the story.");
+                } finally {
+                    storyFromDrawingBtn.disabled = false;
+                    storyFromDrawingBtn.textContent = '✨ Tell a Story About This Picture';
+                }
+            });
+
+            chatForm.addEventListener('submit', handleChatSubmit);
+            generateSongBtn.addEventListener('click', generateSong);
+            readSongBtn.addEventListener('click', () => readAloud(songOutput.innerText, readSongBtn, songAudioPlayer));
+            sentenceNewBtn.addEventListener('click', startSentenceGame);
+            sentenceClearBtn.addEventListener('click', clearSentence);
+            sentenceCheckBtn.addEventListener('click', checkSentence);
+            startSpellingBtn.addEventListener('click', startSpellingBee);
+            spellingListenBtn.addEventListener('click', () => readAloud(`Spell the word: ${spellingState.currentWord}`, spellingListenBtn, spellingAudioPlayer));
+            spellingCheckBtn.addEventListener('click', checkSpelling);
+            spellingNextBtn.addEventListener('click', loadNextSpellingWord);
+            detectiveCheckBtn.addEventListener('click', checkDescription);
+            detectiveNewBtn.addEventListener('click', startPictureDetectiveGame);
+            storyCreatorStartBtn.addEventListener('click', startStoryCreator);
+            storyCreatorGenerateBtn.addEventListener('click', generateSillyStory);
+            storyCreatorNewBtn.addEventListener('click', resetStoryCreator);
+            storyCreatorReadBtn.addEventListener('click', () => readAloud(storyCreatorResult.innerText, storyCreatorReadBtn, storyCreatorAudioPlayer));
+            whatsDifferentNewBtn.addEventListener('click', startWhatsDifferentGame);
+            whatsDifferentCheckBtn.addEventListener('click', checkWhatsDifferentAnswer);
+
+
+            // --- Initial Page Load ---
+            createCategoryButtons();
+            displayVocabularyForCategory('Animals');
+            populateSongWords();
+            showVocab();
+
+            for (let i = 0; i < 5; i++) {
+                createCloud();
+            }
+            setInterval(createCloud, 10000);
+        }
+
+        loadVocabulary();
+
     });
 </script>
 </body>
