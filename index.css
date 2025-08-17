@@ -1,0 +1,224 @@
+:root {
+    --bg-1: #0a183d;
+    --bg-2: #3a65a3;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    background-color: var(--bg-2);
+}
+
+.font-fredoka {
+    font-family: 'Fredoka One', cursive;
+}
+
+/* --- STATIC BACKGROUND STYLES --- */
+.background-container {
+    position: fixed;
+    inset: 0;
+    z-index: -10;
+    pointer-events: none
+}
+
+.layer {
+    position: fixed;
+    inset: 0;
+}
+
+.layer.sky {
+    background: radial-gradient(12px 12px at 10% 20%, rgba(255, 255, 255, .35), rgba(255, 255, 255, 0) 60%),
+    radial-gradient(10px 10px at 85% 15%, rgba(255, 255, 255, .35), rgba(255, 255, 255, 0) 60%),
+    radial-gradient(8px 8px at 70% 60%, rgba(255, 255, 255, .3), rgba(255, 255, 255, 0) 60%),
+    linear-gradient(180deg, var(--bg-1), var(--bg-2));
+}
+
+.layer.mountains {
+    display: flex;
+    align-items: flex-end;
+    opacity: .22;
+    filter: blur(.5px);
+}
+
+.layer.mountains svg {
+    width: 100vw;
+    height: 45vh;
+}
+
+.layer.hills {
+    display: flex;
+    align-items: flex-end;
+    opacity: .35
+}
+
+.layer.hills svg {
+    width: 100vw;
+    height: 40vh;
+}
+
+.layer.clouds {
+    overflow: hidden
+}
+
+.cloud {
+    position: absolute;
+    top: 10vh;
+    left: -30vw;
+    opacity: .9;
+    filter: drop-shadow(0 8px 12px rgba(0, 0, 0, .15));
+    animation: drift linear infinite
+}
+
+.cloud svg {
+    width: 180px;
+    height: auto
+}
+
+@keyframes drift {
+    from {
+        transform: translateX(-30vw)
+    }
+    to {
+        transform: translateX(130vw)
+    }
+}
+
+.layer.grass {
+    display: flex;
+    align-items: flex-end;
+    mix-blend-mode: multiply
+}
+
+.layer.grass:before {
+    content: "";
+    width: 100vw;
+    height: 18vh;
+    display: block;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(0, 0, 0, .06)),
+    repeating-linear-gradient(90deg, #a6ff9f 0 30px, #78f28e 30px 60px);
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, .15) inset;
+    opacity: .75
+}
+
+/* --- CONTENT STYLES --- */
+.main-content {
+    position: relative;
+    z-index: 1;
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+.card:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+}
+
+.correct {
+    background-color: #4ade80 !important; /* green-400 */
+    color: white;
+    transform: scale(1.1);
+}
+
+.incorrect {
+    background-color: #f87171 !important; /* red-400 */
+    color: white;
+    opacity: 0.7;
+}
+
+.loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    margin-left: 8px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.category-btn.active {
+    background-color: #fbbf24; /* amber-400 */
+    color: #1f2937; /* gray-800 */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -2px rgba(0, 0, 0, .1);
+}
+
+/* Fun Fact Modal */
+#fun-fact-modal {
+    transition: opacity 0.3s ease-in-out;
+}
+
+.info-button {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px solid white;
+    transition: background-color 0.2s;
+}
+
+.info-button:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.fun-fact-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+.what-is-it-button {
+    position: absolute;
+    top: 48px;
+    right: 8px;
+}
+
+
+/* Chat styles */
+.chat-message {
+    padding: 8px 12px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    max-width: 80%;
+}
+
+.user-message {
+    background-color: #3b82f6; /* blue-500 */
+    color: white;
+    align-self: flex-end;
+}
+
+.ai-message {
+    background-color: #e5e7eb; /* gray-200 */
+    color: #1f2937; /* gray-800 */
+    align-self: flex-start;
+}
+
+/* Song word button */
+.song-word-btn {
+    transition: all 0.2s ease;
+}
+
+.song-word-btn.selected {
+    background-color: #22c55e; /* green-500 */
+    color: white;
+    transform: scale(1.1);
+}
