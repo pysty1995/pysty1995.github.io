@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="/icon.ico">
     <title>Learning English for Kids</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/index.css">
-    <script src="/user_script_obf.js"></script>
+    <script src="/index.js"></script>
 </head>
 <body>
 
@@ -64,6 +64,13 @@
             <button id="show-whats-different-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">What's Different?</button>
             <button id="show-category-fun-btn" class="font-fredoka text-xl bg-emerald-500 hover:bg-emerald-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Category Fun</button>
             <button id="show-illustrated-story-btn" class="font-fredoka text-xl bg-rose-500 hover:bg-rose-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Illustrated Story</button>
+            <button id="show-word-association-fun-btn" class="font-fredoka text-xl bg-pink-400 hover:bg-pink-500 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Word Association</button>
+            <button id="show-story-puzzle-btn" class="font-fredoka text-xl bg-indigo-500 hover:bg-indigo-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Story Puzzle</button>
+            <button id="show-whats-missing-btn" class="font-fredoka text-xl bg-cyan-500 hover:bg-cyan-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">What's Missing?</button>
+            <button id="show-story-emoji-btn" class="font-fredoka text-xl bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Story Emoji</button>
+            <button id="show-interactive-story-btn" class="font-fredoka text-xl bg-teal-500 hover:bg-teal-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Interactive Adventure</button>
+            <button id="show-describe-picture-btn" class="font-fredoka text-xl bg-lime-500 hover:bg-lime-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Describe the Picture</button>
+            <button id="show-guess-the-sound-btn" class="font-fredoka text-xl bg-yellow-500 hover:bg-yellow-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Guess the Sound</button>
         </nav>
 
         <!-- Vocabulary Section -->
@@ -353,6 +360,118 @@
                 </div>
                 <div id="illustrated-story-output" class="bg-white p-6 rounded-lg shadow-inner min-h-[300px] text-gray-700 leading-relaxed space-y-4">
                     <p class="text-gray-500">Your illustrated story will appear here...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Word Association Fun Section -->
+        <section id="word-association-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ Word Association Fun ✨</h2>
+                <p class="text-center text-gray-600 mb-6">The word is... </p>
+                <div id="word-association-display" class="bg-white p-4 rounded-lg shadow-inner text-4xl text-center font-bold text-purple-600 mb-4 min-h-[70px] flex items-center justify-center"></div>
+                <p class="text-center text-gray-600 mb-2">What does it make you think of?</p>
+                <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                    <input type="text" id="word-association-input" class="flex-grow p-3 text-2xl border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent" placeholder="Type your word here...">
+                    <button id="word-association-check-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-lg">Check My Word</button>
+                </div>
+                <div id="word-association-feedback" class="text-center mt-4 text-lg font-semibold min-h-[50px]"></div>
+                <div class="text-center mt-6">
+                    <button id="word-association-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Word</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Story Puzzle Section -->
+        <section id="story-puzzle-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ Story Puzzle ✨</h2>
+                <p class="text-center text-gray-600 mb-6">Drag and drop the story parts into the right order!</p>
+                <div id="story-puzzle-container" class="bg-white p-4 rounded-lg shadow-inner min-h-[300px] space-y-4"></div>
+                <div class="flex justify-center gap-4 mt-6">
+                    <button id="story-puzzle-check-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full shadow-lg">Check Story</button>
+                    <button id="story-puzzle-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Puzzle</button>
+                </div>
+                <div id="story-puzzle-feedback" class="text-center mt-4 text-lg font-semibold min-h-[50px]"></div>
+            </div>
+        </section>
+
+        <section id="whats-missing-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ What's Missing? ✨</h2>
+                <p id="whats-missing-instructions" class="text-center text-gray-600 mb-6">Look at the picture and try to remember everything in it!</p>
+                <div id="whats-missing-image-container" class="bg-white p-4 rounded-lg shadow-inner min-h-[300px] flex items-center justify-center mb-4"></div>
+                <div id="whats-missing-input-area" class="hidden flex flex-col sm:flex-row items-center justify-center gap-2 mb-4 w-full">
+                    <input type="text" id="whats-missing-input" class="w-full sm:w-80 p-3 text-2xl border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-400 focus:border-transparent" placeholder="What is missing?">
+                    <button id="whats-missing-check-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-lg">Check</button>
+                </div>
+                <div id="whats-missing-feedback" class="text-center mt-4 text-lg font-semibold min-h-[50px]"></div>
+                <div class="text-center mt-6">
+                    <button id="whats-missing-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Game</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Story Emoji Section -->
+        <section id="story-emoji-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ Story Emoji ✨</h2>
+                <p class="text-center text-gray-600 mb-6">Read the story and guess the missing words based on the emojis!</p>
+                <div id="story-emoji-container" class="bg-white p-4 rounded-lg shadow-inner min-h-[200px] text-2xl leading-relaxed space-y-4"></div>
+                <div class="flex justify-center gap-4 mt-6">
+                    <button id="story-emoji-check-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-8 rounded-full shadow-lg">Check My Words</button>
+                    <button id="story-emoji-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Story</button>
+                </div>
+                <div id="story-emoji-feedback" class="text-center mt-4 text-lg font-semibold min-h-[50px]"></div>
+            </div>
+        </section>
+
+        <!-- NEW: Interactive Adventure Section -->
+        <section id="interactive-story-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ Interactive Adventure ✨</h2>
+                <p class="text-center text-gray-600 mb-6">Read the story and decide what happens next!</p>
+                <div id="interactive-story-output" class="bg-white p-6 rounded-lg shadow-inner min-h-[200px] text-gray-700 leading-relaxed space-y-4">
+                    <p class="text-gray-500">Your adventure will begin here...</p>
+                </div>
+                <div id="interactive-story-input-area" class="flex flex-col sm:flex-row gap-2 my-4">
+                    <input type="text" id="interactive-story-input" class="flex-grow p-3 text-xl border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-400 focus:border-transparent" placeholder="What happens next?">
+                    <button id="interactive-story-continue-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-lg">Continue Story</button>
+                </div>
+                <div class="text-center mt-6">
+                    <button id="interactive-story-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Adventure</button>
+                </div>
+            </div>
+        </section>
+        <!-- NEW: Describe the Picture Section -->
+        <section id="describe-picture-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ Describe the Picture ✨</h2>
+                <p class="text-center text-gray-600 mb-6">Look at the picture below and describe what you see!</p>
+                <div id="describe-picture-image-container" class="bg-white p-4 rounded-lg shadow-inner min-h-[300px] flex items-center justify-center mb-4"></div>
+                <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                    <input type="text" id="describe-picture-input" class="flex-grow p-3 text-2xl border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-400 focus:border-transparent" placeholder="What do you see?">
+                    <button id="describe-picture-check-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-lg">Check My Description</button>
+                </div>
+                <div id="describe-picture-feedback" class="text-center mt-4 text-lg font-semibold min-h-[50px]"></div>
+                <div class="text-center mt-6">
+                    <button id="describe-picture-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Picture</button>
+                </div>
+            </div>
+        </section>
+        <!-- NEW: Guess the Sound Section -->
+        <section id="guess-the-sound-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ Guess the Sound ✨</h2>
+                <p class="text-center text-gray-600 mb-6">Read the description and guess the sound!</p>
+                <div id="guess-the-sound-description" class="bg-white p-4 rounded-lg shadow-inner text-2xl text-center font-semibold text-yellow-600 mb-4 min-h-[70px] flex items-center justify-center"></div>
+                <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                    <input type="text" id="guess-the-sound-input" class="flex-grow p-3 text-2xl border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="What sound is it?">
+                    <button id="guess-the-sound-check-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-lg">Check My Guess</button>
+                </div>
+                <div id="guess-the-sound-feedback" class="text-center mt-4 text-lg font-semibold min-h-[50px]"></div>
+                <div class="text-center mt-6">
+                    <button id="guess-the-sound-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Sound</button>
                 </div>
             </div>
         </section>

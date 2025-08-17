@@ -1,0 +1,1 @@
+javascript-obfuscator index.js --output user_script_obf.js
