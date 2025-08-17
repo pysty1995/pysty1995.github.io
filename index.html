@@ -844,6 +844,10 @@
         function showWhatsDifferent() {
             hideAllSections();
             whatsDifferentSection.classList.remove('hidden');
+            if (!whatsDifferentGameStarted) {
+                startWhatsDifferentGame();
+                whatsDifferentGameStarted = true;
+            }
         }
 
 
