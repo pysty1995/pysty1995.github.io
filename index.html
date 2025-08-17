@@ -71,6 +71,8 @@
             <button id="show-interactive-story-btn" class="font-fredoka text-xl bg-teal-500 hover:bg-teal-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Interactive Adventure</button>
             <button id="show-describe-picture-btn" class="font-fredoka text-xl bg-lime-500 hover:bg-lime-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Describe the Picture</button>
             <button id="show-guess-the-sound-btn" class="font-fredoka text-xl bg-yellow-500 hover:bg-yellow-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Guess the Sound</button>
+            <button id="show-finish-drawing-btn" class="font-fredoka text-xl bg-purple-500 hover:bg-purple-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Finish the Drawing</button>
+            <button id="show-emotion-guesser-btn" class="font-fredoka text-xl bg-red-400 hover:bg-red-500 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Emotion Guesser</button>
         </nav>
 
         <!-- Vocabulary Section -->
@@ -472,6 +474,38 @@
                 <div id="guess-the-sound-feedback" class="text-center mt-4 text-lg font-semibold min-h-[50px]"></div>
                 <div class="text-center mt-6">
                     <button id="guess-the-sound-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Sound</button>
+                </div>
+            </div>
+        </section>
+        <!-- NEW: Finish the Drawing Section -->
+        <section id="finish-drawing-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ Finish the Drawing ✨</h2>
+                <p class="text-center text-gray-600 mb-6">Here is the start of a drawing. What should I add to finish it?</p>
+                <div id="finish-drawing-image-container" class="bg-white p-4 rounded-lg shadow-inner min-h-[300px] flex items-center justify-center mb-4"></div>
+                <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                    <input type="text" id="finish-drawing-input" class="flex-grow p-3 text-2xl border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-400 focus:border-transparent" placeholder="Add a...">
+                    <button id="finish-drawing-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-lg">Draw It!</button>
+                </div>
+                <div class="text-center mt-6">
+                    <button id="finish-drawing-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Drawing</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW: Emotion Guessing Game Section -->
+        <section id="emotion-guesser-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ Emotion Guessing Game ✨</h2>
+                <p class="text-center text-gray-600 mb-6">Read the situation and guess the emotion!</p>
+                <div id="emotion-guesser-scenario" class="bg-white p-4 rounded-lg shadow-inner text-2xl text-center font-semibold text-red-500 mb-4 min-h-[100px] flex items-center justify-center"></div>
+                <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                    <input type="text" id="emotion-guesser-input" class="flex-grow p-3 text-2xl border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-red-400 focus:border-transparent" placeholder="How would you feel?">
+                    <button id="emotion-guesser-check-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-lg">Check My Guess</button>
+                </div>
+                <div id="emotion-guesser-feedback" class="text-center mt-4 text-lg font-semibold min-h-[50px]"></div>
+                <div class="text-center mt-6">
+                    <button id="emotion-guesser-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Scenario</button>
                 </div>
             </div>
         </section>

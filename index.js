@@ -2069,6 +2069,173 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- Add these with your other element variables ---
+    const showFinishDrawingBtn = document.getElementById('show-finish-drawing-btn');
+    const finishDrawingSection = document.getElementById('finish-drawing-section');
+    const finishDrawingImageContainer = document.getElementById('finish-drawing-image-container');
+    const finishDrawingInput = document.getElementById('finish-drawing-input');
+    const finishDrawingBtn = document.getElementById('finish-drawing-btn');
+    const finishDrawingNewBtn = document.getElementById('finish-drawing-new-btn');
+
+// --- Add these with your other state variables ---
+    let finishDrawingState = {
+        initialPrompt: '',
+    };
+    let finishDrawingGameStarted = false;
+
+// --- Add this new function with your other "show" functions ---
+    function showFinishDrawing() {
+        hideAllSections();
+        finishDrawingSection.classList.remove('hidden');
+        if (!finishDrawingGameStarted) {
+            startFinishDrawingGame();
+            finishDrawingGameStarted = true;
+        }
+    }
+
+// --- Add these new game functions with your other game logic ---
+    async function startFinishDrawingGame() {
+        finishDrawingNewBtn.disabled = true;
+        finishDrawingBtn.disabled = true;
+        finishDrawingInput.value = '';
+        finishDrawingImageContainer.innerHTML = '<div class="flex justify-center items-center h-full"><div class="loader"></div><p class="ml-4 text-gray-500">Starting a new drawing...</p></div>';
+
+        try {
+            const prompt = `Give me a simple and incomplete drawing prompt for a child to finish. For example: "a single wheel", "the top of a mushroom", "a tree with no leaves". Return a single JSON object with one key: "prompt".`;
+
+            const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+            const result = await callGeminiApi(apiUrl, payload);
+
+            if (result.candidates && result.candidates[0].content.parts[0].text) {
+                const rawJson = result.candidates[0].content.parts[0].text.replace(/```json\n|```/g, '').trim();
+                const data = JSON.parse(rawJson);
+
+                finishDrawingState.initialPrompt = data.prompt;
+
+                const imageUrl = await generateImage(`A simple, cute, and colorful cartoon drawing for a child of: ${data.prompt}`);
+                finishDrawingImageContainer.innerHTML = `<img src="${imageUrl}" class="w-full max-w-md mx-auto rounded-lg shadow-md" alt="${data.prompt}">`;
+            } else {
+                throw new Error("Could not generate a drawing prompt.");
+            }
+        } catch (error) {
+            console.error("Failed to start Finish the Drawing game:", error);
+            finishDrawingImageContainer.innerHTML = '<p class="text-red-500">Could not start a new drawing. Please try again!</p>';
+        } finally {
+            finishDrawingNewBtn.disabled = false;
+            finishDrawingBtn.disabled = false;
+        }
+    }
+
+    async function finishTheDrawing() {
+        const userInput = finishDrawingInput.value.trim();
+        if (!userInput) {
+            alert("Please tell me what to add to the drawing!");
+            return;
+        }
+
+        finishDrawingBtn.disabled = true;
+        finishDrawingImageContainer.innerHTML = '<div class="flex justify-center items-center h-full"><div class="loader"></div><p class="ml-4 text-gray-500">Finishing your drawing...</p></div>';
+
+        try {
+            const fullPrompt = `${finishDrawingState.initialPrompt} with ${userInput}`;
+            const imageUrl = await generateImage(`A simple, cute, and colorful cartoon drawing for a child of: ${fullPrompt}`);
+            finishDrawingImageContainer.innerHTML = `<img src="${imageUrl}" class="w-full max-w-md mx-auto rounded-lg shadow-md" alt="${fullPrompt}">`;
+        } catch (error) {
+            console.error("Failed to finish the drawing:", error);
+            finishDrawingImageContainer.innerHTML = '<p class="text-red-500">I couldn\'t finish the drawing. Let\'s try a new one!</p>';
+        } finally {
+            finishDrawingBtn.disabled = false;
+        }
+    }
+
+    // --- Add these with your other element variables ---
+    const showEmotionGuesserBtn = document.getElementById('show-emotion-guesser-btn');
+    const emotionGuesserSection = document.getElementById('emotion-guesser-section');
+    const emotionGuesserScenario = document.getElementById('emotion-guesser-scenario');
+    const emotionGuesserInput = document.getElementById('emotion-guesser-input');
+    const emotionGuesserCheckBtn = document.getElementById('emotion-guesser-check-btn');
+    const emotionGuesserFeedback = document.getElementById('emotion-guesser-feedback');
+    const emotionGuesserNewBtn = document.getElementById('emotion-guesser-new-btn');
+
+// --- Add these with your other state variables ---
+    let emotionGuesserState = {
+        correctEmotion: '',
+    };
+    let emotionGuesserGameStarted = false;
+
+// --- Add this new function with your other "show" functions ---
+    function showEmotionGuesser() {
+        hideAllSections();
+        emotionGuesserSection.classList.remove('hidden');
+        if (!emotionGuesserGameStarted) {
+            startEmotionGuesserGame();
+            emotionGuesserGameStarted = true;
+        }
+    }
+
+// --- Add these new game functions with your other game logic ---
+    async function startEmotionGuesserGame() {
+        emotionGuesserNewBtn.disabled = true;
+        emotionGuesserCheckBtn.disabled = true;
+        emotionGuesserInput.value = '';
+        emotionGuesserFeedback.innerHTML = '';
+        emotionGuesserScenario.innerHTML = '<div class="loader"></div>';
+
+        try {
+            const prompt = `Describe a simple situation for a 5-year-old that evokes a clear emotion. Then, name the emotion. Return a single JSON object with two keys: "scenario" and "emotion". For example: {"scenario": "You just dropped your ice cream cone on the ground.", "emotion": "sad"}`;
+
+            const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+            const result = await callGeminiApi(apiUrl, payload);
+
+            if (result.candidates && result.candidates[0].content.parts[0].text) {
+                const rawJson = result.candidates[0].content.parts[0].text.replace(/```json\n|```/g, '').trim();
+                const data = JSON.parse(rawJson);
+
+                emotionGuesserState.correctEmotion = data.emotion;
+                emotionGuesserScenario.textContent = data.scenario;
+            } else {
+                throw new Error("Could not generate a scenario.");
+            }
+        } catch (error) {
+            console.error("Failed to start Emotion Guessing game:", error);
+            emotionGuesserScenario.textContent = 'Error!';
+        } finally {
+            emotionGuesserNewBtn.disabled = false;
+            emotionGuesserCheckBtn.disabled = false;
+        }
+    }
+
+    async function checkEmotionGuess() {
+        const userAnswer = emotionGuesserInput.value.trim().toLowerCase();
+        if (!userAnswer) {
+            alert("Please type your guess!");
+            return;
+        }
+
+        emotionGuesserCheckBtn.disabled = true;
+        emotionGuesserFeedback.innerHTML = '<div class="loader inline-block"></div> Thinking...';
+
+        try {
+            const prompt = `A child was asked to guess the emotion for the situation: "${emotionGuesserScenario.textContent}". The correct emotion is "${emotionGuesserState.correctEmotion}". The child guessed "${userAnswer}". Is the child's guess close enough to be considered correct? Respond with a short, cheerful, and encouraging message for the child. If they are correct, praise them. If not, gently tell them the correct answer.`;
+            const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+            const result = await callGeminiApi(apiUrl, payload);
+
+            if (result.candidates && result.candidates[0].content.parts[0].text) {
+                emotionGuesserFeedback.textContent = result.candidates[0].content.parts[0].text;
+            } else {
+                throw new Error("Could not get feedback.");
+            }
+        } catch (error) {
+            console.error("Failed to check emotion guess:", error);
+            emotionGuesserFeedback.textContent = 'That\'s a great guess! Let\'s try another one.';
+        } finally {
+            emotionGuesserCheckBtn.disabled = false;
+        }
+    }
+
     function initializeApp() {
         showVocabBtn.addEventListener('click', showVocab);
         showQuizBtn.addEventListener('click', showQuiz);
@@ -2238,6 +2405,14 @@ document.addEventListener('DOMContentLoaded', () => {
         showGuessTheSoundBtn.addEventListener('click', showGuessTheSound);
         guessTheSoundCheckBtn.addEventListener('click', checkSoundGuess);
         guessTheSoundNewBtn.addEventListener('click', startGuessTheSoundGame);
+
+        showFinishDrawingBtn.addEventListener('click', showFinishDrawing);
+        finishDrawingBtn.addEventListener('click', finishTheDrawing);
+        finishDrawingNewBtn.addEventListener('click', startFinishDrawingGame);
+
+        showEmotionGuesserBtn.addEventListener('click', showEmotionGuesser);
+        emotionGuesserCheckBtn.addEventListener('click', checkEmotionGuess);
+        emotionGuesserNewBtn.addEventListener('click', startEmotionGuesserGame);
         // --- Initial Page Load ---
         createCategoryButtons();
         displayVocabularyForCategory('Animals');
