@@ -1,0 +1,1 @@
+const API_KEY = "AIzaSyCx-9BeHzPAJWanCkDmrD14ZBtrc8A28TY"; // Leave empty, handled by environment
