@@ -2236,6 +2236,288 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- Add these with your other element variables ---
+    const showWhatAmIBtn = document.getElementById('show-what-am-i-btn');
+    const whatAmISection = document.getElementById('what-am-i-section');
+    const whatAmIClues = document.getElementById('what-am-i-clues');
+    const whatAmIInput = document.getElementById('what-am-i-input');
+    const whatAmICheckBtn = document.getElementById('what-am-i-check-btn');
+    const whatAmIFeedback = document.getElementById('what-am-i-feedback');
+    const whatAmINewBtn = document.getElementById('what-am-i-new-btn');
+
+// --- Add these with your other state variables ---
+    let whatAmIState = {
+        correctAnswer: '',
+    };
+    let whatAmIGameStarted = false;
+
+// --- Add this new function with your other "show" functions ---
+    function showWhatAmI() {
+        hideAllSections();
+        whatAmISection.classList.remove('hidden');
+        if (!whatAmIGameStarted) {
+            startWhatAmIGame();
+            whatAmIGameStarted = true;
+        }
+    }
+
+// --- Add these new game functions with your other game logic ---
+    async function startWhatAmIGame() {
+        whatAmINewBtn.disabled = true;
+        whatAmICheckBtn.disabled = true;
+        whatAmIInput.value = '';
+        whatAmIFeedback.innerHTML = '';
+        whatAmIClues.innerHTML = '<div class="flex justify-center items-center h-full"><div class="loader"></div><p class="ml-4 text-gray-500">Thinking of a new puzzle...</p></div>';
+
+        try {
+            const prompt = `Give me a simple object for a child's guessing game, along with three simple clues. Return a single JSON object with two keys: "object" and "clues" (an array of 3 strings). For example: {"object": "sun", "clues": ["I am very bright.", "I am hot.", "I disappear at night."]}`;
+
+            const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+            const result = await callGeminiApi(apiUrl, payload);
+
+            if (result.candidates && result.candidates[0].content.parts[0].text) {
+                const rawJson = result.candidates[0].content.parts[0].text.replace(/```json\n|```/g, '').trim();
+                const data = JSON.parse(rawJson);
+
+                whatAmIState.correctAnswer = data.object;
+                whatAmIClues.innerHTML = '';
+
+                data.clues.forEach((clue, index) => {
+                    setTimeout(() => {
+                        const p = document.createElement('p');
+                        p.textContent = clue;
+                        whatAmIClues.appendChild(p);
+                    }, (index + 1) * 1000);
+                });
+            } else {
+                throw new Error("Could not generate clues.");
+            }
+        } catch (error) {
+            console.error("Failed to start What Am I? game:", error);
+            whatAmIClues.innerHTML = '<p class="text-red-500">Could not create a puzzle. Please try again!</p>';
+        } finally {
+            whatAmINewBtn.disabled = false;
+            whatAmICheckBtn.disabled = false;
+        }
+    }
+
+    async function checkWhatAmIGuess() {
+        const userAnswer = whatAmIInput.value.trim().toLowerCase();
+        if (!userAnswer) {
+            alert("Please type your guess!");
+            return;
+        }
+
+        whatAmICheckBtn.disabled = true;
+        whatAmIFeedback.innerHTML = '<div class="loader inline-block"></div> Thinking...';
+
+        try {
+            const prompt = `A child was asked to guess an object based on clues. The correct answer is "${whatAmIState.correctAnswer}". The child guessed "${userAnswer}". Is the child's guess correct? Respond with a short, cheerful, and encouraging message for the child. If they are correct, praise them. If not, gently tell them the correct answer.`;
+            const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+            const result = await callGeminiApi(apiUrl, payload);
+
+            if (result.candidates && result.candidates[0].content.parts[0].text) {
+                whatAmIFeedback.textContent = result.candidates[0].content.parts[0].text;
+            } else {
+                throw new Error("Could not get feedback.");
+            }
+        } catch (error) {
+            console.error("Failed to check What Am I? guess:", error);
+            whatAmIFeedback.textContent = 'That\'s a great guess! Let\'s try another one.';
+        } finally {
+            whatAmICheckBtn.disabled = false;
+        }
+    }
+
+    // --- Add these with your other element variables ---
+    const showWhatHappensNextBtn = document.getElementById('show-what-happens-next-btn');
+    const whatHappensNextSection = document.getElementById('what-happens-next-section');
+    const whatHappensNextImageContainer = document.getElementById('what-happens-next-image-container');
+    const whatHappensNextInput = document.getElementById('what-happens-next-input');
+    const whatHappensNextSubmitBtn = document.getElementById('what-happens-next-submit-btn');
+    const whatHappensNextFeedback = document.getElementById('what-happens-next-feedback');
+    const whatHappensNextNewBtn = document.getElementById('what-happens-next-new-btn');
+
+// --- Add these with your other state variables ---
+    let whatHappensNextState = {
+        initialPrompt: '',
+    };
+    let whatHappensNextGameStarted = false;
+
+// --- Add this new function with your other "show" functions ---
+    function showWhatHappensNext() {
+        hideAllSections();
+        whatHappensNextSection.classList.remove('hidden');
+        if (!whatHappensNextGameStarted) {
+            startWhatHappensNextGame();
+            whatHappensNextGameStarted = true;
+        }
+    }
+
+// --- Add these new game functions with your other game logic ---
+    async function startWhatHappensNextGame() {
+        whatHappensNextNewBtn.disabled = true;
+        whatHappensNextSubmitBtn.disabled = true;
+        whatHappensNextInput.value = '';
+        whatHappensNextFeedback.innerHTML = '';
+        whatHappensNextImageContainer.innerHTML = '<div class="flex justify-center items-center h-full"><div class="loader"></div><p class="ml-4 text-gray-500">Creating a new scene...</p></div>';
+
+        try {
+            const prompt = `Give me a simple and fun scenario for a child's story that is about to happen. For example: "A cat is about to pounce on a toy mouse" or "A girl is about to blow out the candles on her birthday cake". Return a single JSON object with one key: "scenario".`;
+
+            const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+            const result = await callGeminiApi(apiUrl, payload);
+
+            if (result.candidates && result.candidates[0].content.parts[0].text) {
+                const rawJson = result.candidates[0].content.parts[0].text.replace(/```json\n|```/g, '').trim();
+                const data = JSON.parse(rawJson);
+
+                whatHappensNextState.initialPrompt = data.scenario;
+
+                const imageUrl = await generateImage(`A simple, cute, and colorful cartoon drawing for a child of: ${data.scenario}`);
+                whatHappensNextImageContainer.innerHTML = `<img src="${imageUrl}" class="w-full max-w-md mx-auto rounded-lg shadow-md" alt="${data.scenario}">`;
+            } else {
+                throw new Error("Could not generate a scenario.");
+            }
+        } catch (error) {
+            console.error("Failed to start What Happens Next game:", error);
+            whatHappensNextImageContainer.innerHTML = '<p class="text-red-500">Could not create a new scene. Please try again!</p>';
+        } finally {
+            whatHappensNextNewBtn.disabled = false;
+            whatHappensNextSubmitBtn.disabled = false;
+        }
+    }
+
+    async function continueWhatHappensNextStory() {
+        const userInput = whatHappensNextInput.value.trim();
+        if (!userInput) {
+            alert("Please tell me what you think happens next!");
+            return;
+        }
+
+        whatHappensNextSubmitBtn.disabled = true;
+        whatHappensNextImageContainer.innerHTML = '<div class="flex justify-center items-center h-full"><div class="loader"></div><p class="ml-4 text-gray-500">Drawing what happens next...</p></div>';
+        whatHappensNextFeedback.innerHTML = '';
+
+        try {
+            const fullPrompt = `${whatHappensNextState.initialPrompt}. Then, ${userInput}.`;
+            const imageUrl = await generateImage(`A simple, cute, and colorful cartoon drawing for a child of: ${fullPrompt}`);
+            whatHappensNextImageContainer.innerHTML = `<img src="${imageUrl}" class="w-full max-w-md mx-auto rounded-lg shadow-md" alt="${fullPrompt}">`;
+
+            const feedbackPrompt = `A child was shown a picture of "${whatHappensNextState.initialPrompt}" and predicted that "${userInput}" would happen next. Write a short, encouraging sentence to go with the new picture.`;
+            const feedbackPayload = {contents: [{role: "user", parts: [{text: feedbackPrompt}]}]};
+            const feedbackApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+            const feedbackResult = await callGeminiApi(feedbackApiUrl, feedbackPayload);
+
+            if (feedbackResult.candidates && feedbackResult.candidates[0].content.parts[0].text) {
+                whatHappensNextFeedback.textContent = feedbackResult.candidates[0].content.parts[0].text;
+            }
+
+        } catch (error) {
+            console.error("Failed to continue the story:", error);
+            whatHappensNextImageContainer.innerHTML = '<p class="text-red-500">I couldn\'t draw that. Let\'s try a new story!</p>';
+        } finally {
+            whatHappensNextSubmitBtn.disabled = false;
+        }
+    }
+
+    // --- Add these with your other element variables ---
+    const showCreativeStoryBtn = document.getElementById('show-creative-story-btn');
+    const creativeStorySection = document.getElementById('creative-story-section');
+    const creativeStoryOutput = document.getElementById('creative-story-output');
+    const creativeStoryInput = document.getElementById('creative-story-input');
+    const creativeStoryContinueBtn = document.getElementById('creative-story-continue-btn');
+    const creativeStoryFeedback = document.getElementById('creative-story-feedback');
+    const creativeStoryNewBtn = document.getElementById('creative-story-new-btn');
+
+// --- Add these with your other state variables ---
+    let creativeStoryState = {
+        currentStory: '',
+    };
+    let creativeStoryGameStarted = false;
+
+// --- Add this new function with your other "show" functions ---
+    function showCreativeStory() {
+        hideAllSections();
+        creativeStorySection.classList.remove('hidden');
+        if (!creativeStoryGameStarted) {
+            startCreativeStoryGame();
+            creativeStoryGameStarted = true;
+        }
+    }
+
+// --- Add these new game functions with your other game logic ---
+    async function startCreativeStoryGame() {
+        creativeStoryNewBtn.disabled = true;
+        creativeStoryContinueBtn.disabled = true;
+        creativeStoryInput.value = '';
+        creativeStoryFeedback.innerHTML = '';
+        creativeStoryOutput.innerHTML = '<div class="flex justify-center items-center h-full"><div class="loader"></div><p class="ml-4 text-gray-500">Thinking of a story starter...</p></div>';
+
+        try {
+            const prompt = `Write a single, fun, and imaginative opening sentence for a children's story.`;
+
+            const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+            const result = await callGeminiApi(apiUrl, payload);
+
+            if (result.candidates && result.candidates[0].content.parts[0].text) {
+                const storyStarter = result.candidates[0].content.parts[0].text.trim();
+                creativeStoryState.currentStory = storyStarter;
+                creativeStoryOutput.innerHTML = `<p>${storyStarter}</p>`;
+            } else {
+                throw new Error("Could not generate a story starter.");
+            }
+        } catch (error) {
+            console.error("Failed to start Creative Story Starter game:", error);
+            creativeStoryOutput.innerHTML = '<p class="text-red-500">Could not start a new story. Please try again!</p>';
+        } finally {
+            creativeStoryNewBtn.disabled = false;
+            creativeStoryContinueBtn.disabled = false;
+        }
+    }
+
+    async function continueCreativeStory() {
+        const userInput = creativeStoryInput.value.trim();
+        if (!userInput) {
+            alert("Please write the next sentence!");
+            return;
+        }
+
+        creativeStoryContinueBtn.disabled = true;
+        creativeStoryInput.value = '';
+        creativeStoryFeedback.innerHTML = '<div class="loader inline-block"></div> Thinking...';
+
+        try {
+            const prompt = `This is a children's story we are writing together:\n\n${creativeStoryState.currentStory}\n\nThe child added this sentence: "${userInput}".\n\nFirst, give some encouraging feedback on the child's sentence. Then, continue the story with one more sentence that builds on their idea.`;
+
+            const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+            const result = await callGeminiApi(apiUrl, payload);
+
+            if (result.candidates && result.candidates[0].content.parts[0].text) {
+                const responseText = result.candidates[0].content.parts[0].text;
+                const parts = responseText.split('\n');
+                const feedback = parts.shift();
+                const newStoryPart = parts.join('\n');
+
+                creativeStoryState.currentStory += ` ${userInput} ${newStoryPart}`;
+                creativeStoryOutput.innerHTML = creativeStoryState.currentStory.replace(/\n/g, '<p class="mt-4"></p>');
+                creativeStoryFeedback.textContent = feedback;
+            } else {
+                throw new Error("Could not continue the story.");
+            }
+        } catch (error) {
+            console.error("Failed to continue the story:", error);
+            creativeStoryFeedback.textContent = 'That\'s a great sentence! Let\'s try a new story.';
+        } finally {
+            creativeStoryContinueBtn.disabled = false;
+        }
+    }
+
     function initializeApp() {
         showVocabBtn.addEventListener('click', showVocab);
         showQuizBtn.addEventListener('click', showQuiz);
@@ -2413,6 +2695,18 @@ document.addEventListener('DOMContentLoaded', () => {
         showEmotionGuesserBtn.addEventListener('click', showEmotionGuesser);
         emotionGuesserCheckBtn.addEventListener('click', checkEmotionGuess);
         emotionGuesserNewBtn.addEventListener('click', startEmotionGuesserGame);
+
+        showWhatAmIBtn.addEventListener('click', showWhatAmI);
+        whatAmICheckBtn.addEventListener('click', checkWhatAmIGuess);
+        whatAmINewBtn.addEventListener('click', startWhatAmIGame);
+
+        showWhatHappensNextBtn.addEventListener('click', showWhatHappensNext);
+        whatHappensNextSubmitBtn.addEventListener('click', continueWhatHappensNextStory);
+        whatHappensNextNewBtn.addEventListener('click', startWhatHappensNextGame);
+
+        showCreativeStoryBtn.addEventListener('click', showCreativeStory);
+        creativeStoryContinueBtn.addEventListener('click', continueCreativeStory);
+        creativeStoryNewBtn.addEventListener('click', startCreativeStoryGame);
         // --- Initial Page Load ---
         createCategoryButtons();
         displayVocabularyForCategory('Animals');

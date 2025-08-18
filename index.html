@@ -73,6 +73,9 @@
             <button id="show-guess-the-sound-btn" class="font-fredoka text-xl bg-yellow-500 hover:bg-yellow-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Guess the Sound</button>
             <button id="show-finish-drawing-btn" class="font-fredoka text-xl bg-purple-500 hover:bg-purple-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Finish the Drawing</button>
             <button id="show-emotion-guesser-btn" class="font-fredoka text-xl bg-red-400 hover:bg-red-500 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Emotion Guesser</button>
+            <button id="show-what-am-i-btn" class="font-fredoka text-xl bg-indigo-500 hover:bg-indigo-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">What Am I?</button>
+            <button id="show-what-happens-next-btn" class="font-fredoka text-xl bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">What Happens Next?</button>
+            <button id="show-creative-story-btn" class="font-fredoka text-xl bg-pink-500 hover:bg-pink-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Creative Story Starter</button>
         </nav>
 
         <!-- Vocabulary Section -->
@@ -506,6 +509,56 @@
                 <div id="emotion-guesser-feedback" class="text-center mt-4 text-lg font-semibold min-h-[50px]"></div>
                 <div class="text-center mt-6">
                     <button id="emotion-guesser-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Scenario</button>
+                </div>
+            </div>
+        </section>
+        <!-- NEW: What Am I? Section -->
+        <section id="what-am-i-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ What Am I? ✨</h2>
+                <p class="text-center text-gray-600 mb-6">Read the clues and guess what I am!</p>
+                <div id="what-am-i-clues" class="bg-white p-4 rounded-lg shadow-inner min-h-[150px] text-2xl space-y-2"></div>
+                <div class="flex flex-col sm:flex-row gap-2 my-4">
+                    <input type="text" id="what-am-i-input" class="flex-grow p-3 text-2xl border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-transparent" placeholder="What am I?">
+                    <button id="what-am-i-check-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-lg">Check My Guess</button>
+                </div>
+                <div id="what-am-i-feedback" class="text-center mt-4 text-lg font-semibold min-h-[50px]"></div>
+                <div class="text-center mt-6">
+                    <button id="what-am-i-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Game</button>
+                </div>
+            </div>
+        </section>
+        <!-- NEW: What Happens Next? Section -->
+        <section id="what-happens-next-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ What Happens Next? ✨</h2>
+                <p class="text-center text-gray-600 mb-6">Look at the picture and guess what will happen next!</p>
+                <div id="what-happens-next-image-container" class="bg-white p-4 rounded-lg shadow-inner min-h-[300px] flex items-center justify-center mb-4"></div>
+                <div id="what-happens-next-input-area" class="flex flex-col sm:flex-row gap-2 mb-4">
+                    <input type="text" id="what-happens-next-input" class="flex-grow p-3 text-2xl border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:border-transparent" placeholder="What happens next?">
+                    <button id="what-happens-next-submit-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-lg">Show Me!</button>
+                </div>
+                <div id="what-happens-next-feedback" class="text-center mt-4 text-lg font-semibold min-h-[50px]"></div>
+                <div class="text-center mt-6">
+                    <button id="what-happens-next-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Scene</button>
+                </div>
+            </div>
+        </section>
+        <!-- NEW: Creative Story Starter Section -->
+        <section id="creative-story-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ Creative Story Starter ✨</h2>
+                <p class="text-center text-gray-600 mb-6">Let's write a story together! Read the sentence and continue the story.</p>
+                <div id="creative-story-output" class="bg-white p-6 rounded-lg shadow-inner min-h-[200px] text-gray-700 leading-relaxed space-y-4">
+                    <p class="text-gray-500">Your story will begin here...</p>
+                </div>
+                <div id="creative-story-input-area" class="flex flex-col sm:flex-row gap-2 my-4">
+                    <input type="text" id="creative-story-input" class="flex-grow p-3 text-xl border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-400 focus:border-transparent" placeholder="Write the next sentence...">
+                    <button id="creative-story-continue-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-lg">Add to Story</button>
+                </div>
+                <div id="creative-story-feedback" class="text-center mt-4 text-lg font-semibold min-h-[50px]"></div>
+                <div class="text-center mt-6">
+                    <button id="creative-story-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Story</button>
                 </div>
             </div>
         </section>
