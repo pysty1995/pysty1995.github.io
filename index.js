@@ -2518,6 +2518,100 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // --- Add these with your other element variables ---
+    const showSillySentenceBtn = document.getElementById('show-silly-sentence-btn');
+    const sillySentenceSection = document.getElementById('silly-sentence-section');
+    const sillySentenceWords = document.getElementById('silly-sentence-words');
+    const sillySentenceInput = document.getElementById('silly-sentence-input');
+    const sillySentenceCheckBtn = document.getElementById('silly-sentence-check-btn');
+    const sillySentenceFeedback = document.getElementById('silly-sentence-feedback');
+    const sillySentenceNewBtn = document.getElementById('silly-sentence-new-btn');
+
+// --- Add these with your other state variables ---
+    let sillySentenceState = {
+        words: [],
+    };
+    let sillySentenceGameStarted = false;
+
+// --- Add this new function with your other "show" functions ---
+    function showSillySentence() {
+        hideAllSections();
+        sillySentenceSection.classList.remove('hidden');
+        if (!sillySentenceGameStarted) {
+            startSillySentenceGame();
+            sillySentenceGameStarted = true;
+        }
+    }
+
+// --- Add these new game functions with your other game logic ---
+    async function startSillySentenceGame() {
+        sillySentenceNewBtn.disabled = true;
+        sillySentenceCheckBtn.disabled = true;
+        sillySentenceInput.value = '';
+        sillySentenceFeedback.innerHTML = '';
+        sillySentenceWords.innerHTML = '<div class="loader"></div>';
+
+        try {
+            const prompt = `Give me a list of 4 to 5 random and funny words for a child's silly sentence game. The words should be a mix of nouns, verbs, and adjectives. Return a single JSON object with one key: "words" (an array of strings).`;
+
+            const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+            const result = await callGeminiApi(apiUrl, payload);
+
+            if (result.candidates && result.candidates[0].content.parts[0].text) {
+                const rawJson = result.candidates[0].content.parts[0].text.replace(/```json\n|```/g, '').trim();
+                const data = JSON.parse(rawJson);
+
+                sillySentenceState.words = data.words;
+                sillySentenceWords.innerHTML = '';
+
+                data.words.forEach(word => {
+                    const span = document.createElement('span');
+                    span.textContent = word;
+                    span.className = 'bg-yellow-200 text-yellow-800 font-bold py-2 px-4 rounded-full';
+                    sillySentenceWords.appendChild(span);
+                });
+            } else {
+                throw new Error("Could not generate silly words.");
+            }
+        } catch (error) {
+            console.error("Failed to start Silly Sentence game:", error);
+            sillySentenceWords.innerHTML = '<p class="text-red-500">Could not get new words. Please try again!</p>';
+        } finally {
+            sillySentenceNewBtn.disabled = false;
+            sillySentenceCheckBtn.disabled = false;
+        }
+    }
+
+    async function checkSillySentence() {
+        const userSentence = sillySentenceInput.value.trim();
+        if (!userSentence) {
+            alert("Please write a sentence!");
+            return;
+        }
+
+        sillySentenceCheckBtn.disabled = true;
+        sillySentenceFeedback.innerHTML = '<div class="loader inline-block"></div> Thinking...';
+
+        try {
+            const prompt = `A child was given the words: ${JSON.stringify(sillySentenceState.words)}. They wrote the sentence: "${userSentence}". Does the sentence use all the words? Is it a creative and silly sentence? Respond with a short, cheerful, and encouraging message for the child, praising their creativity.`;
+            const payload = {contents: [{role: "user", parts: [{text: prompt}]}]};
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+            const result = await callGeminiApi(apiUrl, payload);
+
+            if (result.candidates && result.candidates[0].content.parts[0].text) {
+                sillySentenceFeedback.textContent = result.candidates[0].content.parts[0].text;
+            } else {
+                throw new Error("Could not get feedback.");
+            }
+        } catch (error) {
+            console.error("Failed to check silly sentence:", error);
+            sillySentenceFeedback.textContent = 'That\'s a very silly sentence! Let\'s try some new words.';
+        } finally {
+            sillySentenceCheckBtn.disabled = false;
+        }
+    }
+
     function initializeApp() {
         showVocabBtn.addEventListener('click', showVocab);
         showQuizBtn.addEventListener('click', showQuiz);
@@ -2707,6 +2801,10 @@ document.addEventListener('DOMContentLoaded', () => {
         showCreativeStoryBtn.addEventListener('click', showCreativeStory);
         creativeStoryContinueBtn.addEventListener('click', continueCreativeStory);
         creativeStoryNewBtn.addEventListener('click', startCreativeStoryGame);
+
+        showSillySentenceBtn.addEventListener('click', showSillySentence);
+        sillySentenceCheckBtn.addEventListener('click', checkSillySentence);
+        sillySentenceNewBtn.addEventListener('click', startSillySentenceGame);
         // --- Initial Page Load ---
         createCategoryButtons();
         displayVocabularyForCategory('Animals');

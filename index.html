@@ -76,6 +76,7 @@
             <button id="show-what-am-i-btn" class="font-fredoka text-xl bg-indigo-500 hover:bg-indigo-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">What Am I?</button>
             <button id="show-what-happens-next-btn" class="font-fredoka text-xl bg-orange-500 hover:bg-orange-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">What Happens Next?</button>
             <button id="show-creative-story-btn" class="font-fredoka text-xl bg-pink-500 hover:bg-pink-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Creative Story Starter</button>
+            <button id="show-silly-sentence-btn" class="font-fredoka text-xl bg-cyan-500 hover:bg-cyan-600 text-white py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform duration-300">Silly Sentence Maker</button>
         </nav>
 
         <!-- Vocabulary Section -->
@@ -559,6 +560,22 @@
                 <div id="creative-story-feedback" class="text-center mt-4 text-lg font-semibold min-h-[50px]"></div>
                 <div class="text-center mt-6">
                     <button id="creative-story-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Story</button>
+                </div>
+            </div>
+        </section>
+        <!-- NEW: Silly Sentence Maker Section -->
+        <section id="silly-sentence-section" class="hidden">
+            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 md:p-8 max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-center text-gray-800 mb-4 font-fredoka">✨ Silly Sentence Maker ✨</h2>
+                <p class="text-center text-gray-600 mb-6">Use all of these words to make a silly sentence!</p>
+                <div id="silly-sentence-words" class="flex justify-center flex-wrap gap-4 mb-6 bg-white p-4 rounded-lg shadow-inner"></div>
+                <div class="flex flex-col sm:flex-row gap-2 mb-4">
+                    <input type="text" id="silly-sentence-input" class="flex-grow p-3 text-2xl border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-400 focus:border-transparent" placeholder="Write your silly sentence here...">
+                    <button id="silly-sentence-check-btn" class="font-fredoka text-xl bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg shadow-lg">Check My Sentence</button>
+                </div>
+                <div id="silly-sentence-feedback" class="text-center mt-4 text-lg font-semibold min-h-[50px]"></div>
+                <div class="text-center mt-6">
+                    <button id="silly-sentence-new-btn" class="font-fredoka text-xl bg-green-500 hover:bg-green-600 text-white py-3 px-8 rounded-full shadow-lg">New Words</button>
                 </div>
             </div>
         </section>
