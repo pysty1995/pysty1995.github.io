@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DATA (WITH CORRECTED CARTOON IMAGES) ---
     let vocabulary = {};
     let allItems = [];
-
+    let currentCategory = '';
     async function loadVocabulary() {
         try {
             const response = await fetch('./vocabulary.json');
@@ -361,6 +361,35 @@ document.addEventListener('DOMContentLoaded', () => {
         isSpeaking = true;
 
         const audioUrl = await generateAudioUrl(text);
+        if (audioUrl) {
+            const audio = new Audio(audioUrl);
+            audio.play();
+            audio.onended = () => {
+                isSpeaking = false;
+            };
+            audio.onerror = () => {
+                isSpeaking = false;
+            };
+        } else {
+            isSpeaking = false;
+        }
+    }
+
+    async function speakVocabulary(text) {
+        let audioUrl = "/sound/" + currentCategory + "/" + text + ".wav";
+        // check if audio file exists in the local sound folder
+        try {
+            const response = await fetch(audioUrl);
+            if (!response.ok) {
+                audioUrl = await generateAudioUrl(text);
+            }
+        } catch (error) {
+            console.error(`Failed to fetch audio for "${text}":`, error);
+            audioUrl = await generateAudioUrl(text);
+        }
+        if (isSpeaking) return;
+        isSpeaking = true;
+
         if (audioUrl) {
             const audio = new Audio(audioUrl);
             audio.play();
@@ -759,6 +788,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- VOCABULARY UI ---
     function displayVocabularyForCategory(categoryName) {
+        currentCategory = categoryName;
         vocabGridContainer.innerHTML = '';
         const items = vocabulary[categoryName];
         const grid = document.createElement('div');
@@ -767,7 +797,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = document.createElement('div');
             card.className = 'card bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden cursor-pointer';
             card.innerHTML = `<img src="${item.img}" alt="${item.name}" class="w-full h-80 w-35 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400/ccc/000?text=Image+Error';"><button class="info-button fun-fact-button" data-item-name="${item.name}">?</button><button class="info-button what-is-it-button" data-item-name="${item.name}">🤔</button>`;
-            card.querySelector('img').addEventListener('click', () => speak(item.name));
+            card.querySelector('img').addEventListener('click', () => speakVocabulary(item.name));
             grid.appendChild(card);
         });
         vocabGridContainer.appendChild(grid);
