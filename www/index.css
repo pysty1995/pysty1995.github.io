@@ -222,3 +222,7 @@ body {
     color: white;
     transform: scale(1.1);
 }
+
+nav::-webkit-scrollbar {
+    display: none; /* Hides the scrollbar for a cleaner look */
+}

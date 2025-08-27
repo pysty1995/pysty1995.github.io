@@ -5,14 +5,14 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentCategory = '';
     async function loadVocabulary() {
         try {
-            const response = await fetch('vocabulary.json');
+            const response = await fetch('https://pysty1995.github.io/www/vocabulary.json');
             vocabulary = await response.json();
             allItems = [].concat(...Object.values(vocabulary));
             // Once data is loaded, initialize the app
             initializeApp();
         } catch (error) {
             console.error("Failed to load vocabulary:", error);
-            document.body.innerHTML = '<div class="text-white text-center p-8">Failed to load vocabulary data. Please refresh the page.</div>';
+            document.body.innerHTML = '<div class="text-white text-center p-8">Failed to load vocabulary data. Please refresh the page.' + error + '</div>';
         }
     }
 
@@ -376,32 +376,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function speakVocabulary(text) {
-        let audioUrl = "sound/" + currentCategory + "/" + text + ".wav";
-        // check if audio file exists in the local sound folder
-        try {
-            const response = await fetch(audioUrl);
-            if (!response.ok) {
-                audioUrl = await generateAudioUrl(text);
-            }
-        } catch (error) {
-            console.error(`Failed to fetch audio for "${text}":`, error);
-            audioUrl = await generateAudioUrl(text);
-        }
         if (isSpeaking) return;
         isSpeaking = true;
 
-        if (audioUrl) {
-            const audio = new Audio(audioUrl);
-            audio.play();
-            audio.onended = () => {
-                isSpeaking = false;
-            };
-            audio.onerror = () => {
-                isSpeaking = false;
-            };
-        } else {
-            isSpeaking = false;
-        }
+        // Build candidate local file paths relative to the current index.html (file:// safe)
+        const baseURL = new URL('.', window.location.href);
+        const folder = `sound/${encodeURIComponent(currentCategory)}/`;
+        const baseName = encodeURIComponent(text);
+        const candidates = [
+            new URL(`${folder}${baseName}.wav`, baseURL).toString(),
+//            new URL(`${folder}${baseName}.mp3`, baseURL).toString(),
+//            new URL(`${folder}${baseName}.m4a`, baseURL).toString(),
+        ];
+
+        const tryPlay = async (idx) => {
+            if (idx >= candidates.length) {
+                // Fallback to TTS
+                const ttsUrl = await generateAudioUrl(text);
+                if (!ttsUrl) { isSpeaking = false; return; }
+                const a = new Audio(ttsUrl);
+                a.play();
+                a.onended = () => { isSpeaking = false; };
+                a.onerror = () => { isSpeaking = false; };
+                return;
+            }
+            const url = candidates[idx];
+            const audio = new Audio(url);
+            // If it can play, great; if it errors (e.g., file missing), try next extension
+            let played = false;
+            audio.oncanplaythrough = () => { if (!played) { played = true; audio.play(); } };
+            audio.onended = () => { isSpeaking = false; };
+            audio.onerror = () => { tryPlay(idx + 1); };
+            audio.play().then(() => { played = true; }).catch(() => { tryPlay(idx + 1); });
+        };
+
+        tryPlay(0);
     }
 
     async function readAloud(text, button, playerContainer) {
@@ -796,7 +805,7 @@ document.addEventListener('DOMContentLoaded', () => {
         items.forEach(item => {
             const card = document.createElement('div');
             card.className = 'card bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden cursor-pointer';
-            card.innerHTML = `<img src="${item.img}" alt="${item.name}" class="w-full h-80 w-35 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400/ccc/000?text=Image+Error';"><button class="info-button fun-fact-button" data-item-name="${item.name}">?</button><button class="info-button what-is-it-button" data-item-name="${item.name}">🤔</button>`;
+            card.innerHTML = `<img src="${item.img}" alt="${item.name}" class="w-full h-65 w-30 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400/ccc/000?text=Image+Error';"><button class="info-button fun-fact-button" data-item-name="${item.name}">?</button><button class="info-button what-is-it-button" data-item-name="${item.name}">🤔</button>`;
             card.querySelector('img').addEventListener('click', () => speakVocabulary(item.name));
             grid.appendChild(card);
         });
