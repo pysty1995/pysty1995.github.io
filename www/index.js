@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentCategory = '';
     async function loadVocabulary() {
         try {
-            const response = await fetch('./vocabulary.json');
+            const response = await fetch('vocabulary.json');
             vocabulary = await response.json();
             allItems = [].concat(...Object.values(vocabulary));
             // Once data is loaded, initialize the app
@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function speakVocabulary(text) {
-        let audioUrl = "/sound/" + currentCategory + "/" + text + ".wav";
+        let audioUrl = "sound/" + currentCategory + "/" + text + ".wav";
         // check if audio file exists in the local sound folder
         try {
             const response = await fetch(audioUrl);
