@@ -1,15 +1,99 @@
+// Simple rotating tips (optional)
+const TIPS = [
+    "Tip: Tap a picture to hear its pronunciation.",
+    "Tip: Try the quiz page after practicing!",
+    "Tip: Practice a little every day for the best results.",
+    "Tip: Say the word out loud after you hear it."
+];
+let tipIdx = 0;
+
+function rotateTip() {
+    const el = document.getElementById('loader-tip');
+    if (!el) return;
+    tipIdx = (tipIdx + 1) % TIPS.length;
+    el.textContent = TIPS[tipIdx];
+}
+
+setInterval(rotateTip, 2800);
+
+// Loader controls
+function setLoaderText(msg) {
+    const s = document.getElementById('loader-status');
+    if (s) s.textContent = msg;
+}
+
+function setLoaderProgress(pct) {
+    const bar = document.getElementById('loader-bar');
+    if (bar) bar.style.width = Math.max(0, Math.min(100, pct)) + '%';
+}
+
+function hideLoader() {
+    const host = document.getElementById('app-loader');
+    if (!host) return;
+    host.classList.add('is-hidden');
+    // Optional: remove from DOM after animation
+    setTimeout(() => host.remove(), 400);
+}
+
+// Example: wrap your existing vocabulary load
+async function bootApp() {
+    console.log("Booting app...");
+    try {
+        setLoaderText('Loading vocabulary…');
+        setLoaderProgress(20);
+
+        // Your current loader — keep your working path here
+        const res = await fetch('vocabulary.json');
+        if (!res.ok) throw new Error('Vocabulary not found');
+        const vocabulary = await res.json();
+
+        setLoaderText('Preparing images & sounds…');
+        setLoaderProgress(60);
+        // (Do any prefetching / warm-up you need)
+
+        setLoaderText('Almost done…');
+        setLoaderProgress(85);
+        // initialize app UI with vocabulary here
+        // initializeApp(vocabulary);
+
+        setLoaderProgress(100);
+        hideLoader(); // show your app
+    } catch (e) {
+        setLoaderText('Could not load data. Please try again.');
+        setLoaderProgress(100);
+        console.error(e);
+        // You can keep the loader visible or render an error UI
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- DATA (WITH CORRECTED CARTOON IMAGES) ---
     let vocabulary = {};
     let allItems = [];
     let currentCategory = '';
+
     async function loadVocabulary() {
         try {
+            setLoaderText('Loading vocabulary…');
+            setLoaderProgress(20);
+
             const response = await fetch('https://pysty1995.github.io/www/vocabulary.json');
             vocabulary = await response.json();
             allItems = [].concat(...Object.values(vocabulary));
             // Once data is loaded, initialize the app
             initializeApp();
+            setLoaderText('Preparing images & sounds…');
+            setLoaderProgress(60);
+            // (Do any prefetching / warm-up you need)
+            // sleep to simulate loading
+            await new Promise(res => setTimeout(res, 1500));
+            setLoaderText('Almost done…');
+            setLoaderProgress(85);
+            // initialize app UI with vocabulary here
+            // initializeApp(vocabulary);
+
+            setLoaderProgress(100);
+            hideLoader(); // show your app
         } catch (error) {
             console.error("Failed to load vocabulary:", error);
             document.body.innerHTML = '<div class="text-white text-center p-8">Failed to load vocabulary data. Please refresh the page.' + error + '</div>';
@@ -393,21 +477,41 @@ document.addEventListener('DOMContentLoaded', () => {
             if (idx >= candidates.length) {
                 // Fallback to TTS
                 const ttsUrl = await generateAudioUrl(text);
-                if (!ttsUrl) { isSpeaking = false; return; }
+                if (!ttsUrl) {
+                    isSpeaking = false;
+                    return;
+                }
                 const a = new Audio(ttsUrl);
                 a.play();
-                a.onended = () => { isSpeaking = false; };
-                a.onerror = () => { isSpeaking = false; };
+                a.onended = () => {
+                    isSpeaking = false;
+                };
+                a.onerror = () => {
+                    isSpeaking = false;
+                };
                 return;
             }
             const url = candidates[idx];
             const audio = new Audio(url);
             // If it can play, great; if it errors (e.g., file missing), try next extension
             let played = false;
-            audio.oncanplaythrough = () => { if (!played) { played = true; audio.play(); } };
-            audio.onended = () => { isSpeaking = false; };
-            audio.onerror = () => { tryPlay(idx + 1); };
-            audio.play().then(() => { played = true; }).catch(() => { tryPlay(idx + 1); });
+            audio.oncanplaythrough = () => {
+                if (!played) {
+                    played = true;
+                    audio.play();
+                }
+            };
+            audio.onended = () => {
+                isSpeaking = false;
+            };
+            audio.onerror = () => {
+                tryPlay(idx + 1);
+            };
+            audio.play().then(() => {
+                played = true;
+            }).catch(() => {
+                tryPlay(idx + 1);
+            });
         };
 
         tryPlay(0);
