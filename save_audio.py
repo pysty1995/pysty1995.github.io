@@ -95,7 +95,7 @@ API_KEYS = ["AIzaSyCx-9BeHzPAJWanCkDmrD14ZBtrc8A28TY",
             "AIzaSyAFpg8xYh3CqFSkFrEROSakWDJh0q1AKjQ",
             "AIzaSyDMYzo9K2ayAfBFhaznFqeirVxEpEVWBHE",
             "AIzaSyCG6cbBTsUsXdxN-I4mWwGTx8-UDeblZoA"]
-path_ = os.getcwd()
+path_ = os.getcwd() + "/www"
 # Read dictionary from file `vocabulary.json`
 with open(path_ + '/vocabulary.json', 'r') as file:
     vocabulary = json.load(file)
