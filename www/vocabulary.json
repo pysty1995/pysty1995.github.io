@@ -192,16 +192,31 @@
     {"name": "Sphere", "img": "vocabulary/Shapes/EDA916BB-9E41-44D4-9061-95534CECB52A.png"}
   ],
   "Classroom Objects": [
-    {"name": "Book", "img": "https://img.freepik.com/free-vector/book-cartoon-character_1308-107113.jpg"},
-    {"name": "Pencil", "img": "https://img.freepik.com/free-vector/pencil-cartoon-character_1308-107128.jpg"},
-    {"name": "Chair", "img": "https://img.freepik.com/free-vector/chair-cartoon-character_1308-107114.jpg"},
-    {"name": "Table", "img": "https://img.freepik.com/free-vector/table-cartoon-character_1308-107130.jpg"},
-    {"name": "Backpack", "img": "https://img.freepik.com/free-vector/backpack-cartoon-character_1308-107111.jpg"},
-    {"name": "Scissors", "img": "https://img.freepik.com/free-vector/scissors-cartoon-character_1308-107129.jpg"},
-    {"name": "Glue", "img": "https://img.freepik.com/free-vector/glue-cartoon-character_1308-107117.jpg"},
-    {"name": "Crayon", "img": "https://img.freepik.com/free-vector/crayon-cartoon-character_1308-107114.jpg"},
-    {"name": "Ruler", "img": "https://img.freepik.com/free-vector/ruler-cartoon-character_1308-107129.jpg"},
-    {"name": "Blackboard", "img": "https://img.freepik.com/free-vector/blackboard-cartoon-character_1308-107111.jpg"},
-    {"name": "Globe", "img": "https://img.freepik.com/free-vector/globe-cartoon-character_1308-107117.jpg"}
+    {"name": "Backpack", "img": "vocabulary/Classroom Objects/Backpack.png"},
+    {"name": "Blackboard", "img": "vocabulary/Classroom Objects/Blackboard.png"},
+    {"name": "Book", "img": "vocabulary/Classroom Objects/Book.png"},
+    {"name": "Calculator", "img": "vocabulary/Classroom Objects/Calculator.png"},
+    {"name": "Chair", "img": "vocabulary/Classroom Objects/Chair.png"},
+    {"name": "Chalk", "img": "vocabulary/Classroom Objects/Chalk.png"},
+    {"name": "Clock", "img": "vocabulary/Classroom Objects/Clock.png"},
+    {"name": "Colored pencils", "img": "vocabulary/Classroom Objects/Colored pencils.png"},
+    {"name": "Computer", "img": "vocabulary/Classroom Objects/Computer.png"},
+    {"name": "Crayons", "img": "vocabulary/Classroom Objects/Crayons.png"},
+    {"name": "Desk", "img": "vocabulary/Classroom Objects/Desk.png"},
+    {"name": "Eraser", "img": "vocabulary/Classroom Objects/Eraser.png"},
+    {"name": "Globe", "img": "vocabulary/Classroom Objects/Globe.png"},
+    {"name": "Glue stick", "img": "vocabulary/Classroom Objects/Glue stick.png"},
+    {"name": "Map", "img": "vocabulary/Classroom Objects/Map.png"},
+    {"name": "Marker", "img": "vocabulary/Classroom Objects/Marker.png"},
+    {"name": "Notebook", "img": "vocabulary/Classroom Objects/Notebook.png"},
+    {"name": "Paintbrush", "img": "vocabulary/Classroom Objects/Paintbrush.png"},
+    {"name": "Paper", "img": "vocabulary/Classroom Objects/Paper.png"},
+    {"name": "Pen", "img": "vocabulary/Classroom Objects/Pen.png"},
+    {"name": "Pencil", "img": "vocabulary/Classroom Objects/Pencil.png"},
+    {"name": "Projector", "img": "vocabulary/Classroom Objects/Projector.png"},
+    {"name": "Ruler", "img": "vocabulary/Classroom Objects/Ruler.png"},
+    {"name": "Scissors", "img": "vocabulary/Classroom Objects/Scissors.png"},
+    {"name": "Whiteboard", "img": "vocabulary/Classroom Objects/Whiteboard.png"}
+
   ]
 }
